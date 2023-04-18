@@ -3,7 +3,8 @@ pipeline {
   stages {
     stage('prepare') {
       steps {
-        git(url: 'https://github.com/gihong-park/cross_buddy', branch: 'master', changelog: true, credentialsId: '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')
+        echo 'Clonning Repository'
+        checkout scm
       }
     }
 
