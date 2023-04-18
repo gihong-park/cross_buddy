@@ -1,0 +1,27 @@
+
+version: '3.2'
+
+services:
+  # https://dev.mysql.com/doc/refman/8.0/en/docker-mysql-more-topics.html 참고
+  test-mysql:
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      TZ: Asia/Seoul
+
+
+    ports:
+      - '3306:3306'
+    expose:
+      - "3306"
+#    volumes:
+#      - ./init-schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+    command:
+      - 'mysqld'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--general-log=1'
+      - '--general-log-file=/var/lib/mysql/general-log.log'

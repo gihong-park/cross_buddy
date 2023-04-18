@@ -1,0 +1,565 @@
+= Cross Bridge REST API Guide
+박기홍;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+[[overview]]
+== 개요
+
+[[overview-http-verbs]]
+== HTTP 동사
+
+본 REST API에서 사용하는 HTTP 동사(verbs)는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
+
+|===
+| 동사 | 용례
+
+| `GET`
+| 리소스를 가져올 때 사용
+
+| `POST`
+| 새 리소스를 만들 때 사용
+
+| `PUT`
+| 기존 리소스를 (일부) 수정할 때 사용
+
+| `PATCH`
+| 기존 리소스의 일부를 수정할 때 사용
+
+| `DELETE`
+| 기존 리소스를 삭제할 떄 사용
+|===
+
+[[overview-http-status-codes]]
+== HTTP 상태 코드
+
+본 REST API에서 사용하는 HTTP 상태 코드는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
+
+|===
+| 상태 코드 | 용례
+
+| `200 OK`
+| 요청을 성공적으로 처리함
+
+| `201 Created`
+| 새 리소스를 성공적으로 생성함. 응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
+
+| `204 No Content`
+| 기존 리소스를 성공적으로 수정함.
+
+| `400 Bad Request`
+| 잘못된 요청을 보낸 경우. 응답 본문에 더 오류에 대한 정보가 담겨있다.
+
+| `404 Not Found`
+| 요청한 리소스가 없음.
+|===
+
+[[overview-errors]]
+== 오류
+
+에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다. 에러 객체는 다음의 구조를 따른다.
+
+include::{snippets}/bad-request-login/response-fields.adoc[]
+
+예를 들어, 잘못된 요청으로 이벤트를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
+
+include::{snippets}/bad-request-login/http-response.adoc[]
+
+[[overview-hypermedia]]
+== 하이퍼미디어
+
+본 REST API는 하이퍼미디어와 사용하며 응답에 담겨있는 리소스는 다른 리소스에 대한 링크를 가지고 있다.
+응답은 http://stateless.co/hal_specification.html[Hypertext Application from resource to resource. Language (HAL)] 형식을 따른다.
+링크는 `_links`라는 키로 제공한다. 본 API의 사용자(클라이언트)는 URI를 직접 생성하지 않아야 하며, 리소스에서 제공하는 링크를 사용해야 한다.
+
+[[resources]]
+== 리소스
+
+[[resources-index]]
+== 인덱스
+
+인덱스는 서비스 진입점을 제공한다.
+
+
+//[[resources-index-access]]
+//=== 인덱스 조회
+//
+//`GET` 요청을 사용하여 인덱스에 접근할 수 있다.
+//
+//operation::index[snippets='http-request,http-response,response-body,response-fields,links']
+
+[[resources-user]]
+== 유저
+
+유저를 조회 혹은 회원가입, 로그인 때 사용한다.
+
+[[social-naver-login]]
+=== 소셜 네이버 로그인
+
+`POST` 요청을 사용해서 소셜 유저를 생성 혹은 로그인 시킬 수 있다.
+소셜 유저가 없을 경우, 생성 후 로그인.
+소셜 유저가 이미 가입되어 있을 경우, 소셜로 부터 받은 정보로 회원 정보 수정 후 로그인.
+
+operation::social-naver-login[snippets='http-request,request-fields,http-response,response-fields,links']
+
+[[social-kakao-login]]
+=== 소셜 카카오 로그인
+
+`POST` 요청을 사용해서 소셜 유저를 생성 혹은 로그인 시킬 수 있다.
+소셜 유저가 없을 경우, 생성 후 로그인.
+소셜 유저가 이미 가입되어 있을 경우, 소셜로 부터 받은 정보로 회원 정보 수정 후 로그인.
+
+operation::social-kakao-login[snippets='http-request,request-fields,http-response,response-fields,links']
+
+[[user-signup]]
+=== 유저 회원가입
+
+`POST` 요청을 사용해서 일반 유저를 회원가입 시킬 수 있다.
+
+operation::user-signup[snippets='http-request,request-fields,http-response,response-fields,links']
+
+[[user-login]]
+=== 유저 로그인
+
+`POST` 요청을 사용해서 일반 유저를 로그인 시킬 수 있다.
+
+operation::user-login[snippets='http-request,curl-request,request-fields,http-response,response-fields,links']
+
+[[user-self-info]]
+=== 로그인 유저 정보
+
+operation::user-self-info[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[is-email-exist]]
+=== 이메일 중복 확인
+`true` 일 경우 중복 되지 않은 것. `false` 일 경우 중복 되는 것.
+
+operation::is-email-exist[snippets='http-request,curl-request,http-response,response-fields']
+
+[[is-nickname-exist]]
+=== 닉네임 중복 확인
+`true` 일 경우 중복 되지 않은 것. `false` 일 경우 중복 되는 것.
+
+operation::is-nickname-exist[snippets='http-request,curl-request,http-response,response-fields']
+
+[[resources-image]]
+== 이미지
+
+[[image-upload]]
+=== 이미지 업로드
+`POST` 방식으로 이미지 업로드
+
+operation::image-upload[snippets='http-request,curl-request,request-parts,http-response,response-fields']
+
+[[resources-image-create]]
+=== 이미지 생성
+
+operation::resources-image-create[snippets='http-request,curl-request,request-parts,http-response,response-fields,links']
+
+[[resources-image-get]]
+=== 이미지 단건 조회
+
+operation::resources-image-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-contents]]
+== 컨텐츠
+
+
+[[resources-admin-contents-create]]
+=== 컨텐츠 생성
+`POST` 방식으로 컨텐츠 생성
+
+imgUrl, videoUrl, collectionId 는 셋 중 하나만 값이 존재해야한다.
+
+operation::resources-admin-contents-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-contents-put]]
+=== 컨텐츠 수정
+`PUT` 방식으로 컨텐츠 수정
+
+imgUrl, videoUrl, collectionId 는 셋 중 하나만 값이 존재해야한다.
+
+operation::resources-admin-contents-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+
+[[resources-admin-contents-delete]]
+=== 컨텐츠 삭제
+`DELETE` 방식으로 컨텐츠 삭제
+
+operation::resources-admin-contents-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-contents-list]]
+=== 컨텐츠 리스트
+`GET` 방식으로 컨텐츠 리스트 불러오기
+
+operation::resources-admin-contents-list[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-admin-contents-get]]
+=== 컨텐츠 단 건
+컬렉션 혹은 이미지 혹은 비디오가 있을 예정입니다.
+
+operation::resources-admin-contents-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-contents-list]]
+=== 컨텐츠 리스트
+`GET` 방식으로 컨텐츠 리스트 불러오기
+
+operation::resources-contents-list[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-contents-get]]
+=== 컨텐츠 단 건
+컬렉션 혹은 이미지 혹은 비디오가 있을 예정입니다.
+
+operation::resources-contents-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-collection]]
+== 컬렉션
+
+[[resources-admin-collection-create]]
+=== 컬렉션 생성
+`POST` 방식으로 컬렉션 생성
+
+operation::resources-admin-collection-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-collection-put]]
+=== 컬렉션 수정
+`PUT` 방식으로 컬렉션 수정
+
+operation::resources-admin-collection-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-collection-delete]]
+=== 컬렉션 삭제
+`DELETE` 방식으로 컬렉션 삭제
+
+operation::resources-admin-collection-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-collection-list]]
+=== 컬렉션 리스트
+
+operation::resources-admin-collection-list[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-admin-collection-get]]
+=== 컬렉션 단건
+
+operation::resources-admin-collection-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-collection-list]]
+=== 컬렉션 리스트
+
+operation::resources-collection-list[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-collection-get]]
+=== 컬렉션 단건
+
+operation::resources-collection-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-product]]
+== 상품
+
+[[resources-admin-product-create]]
+=== 상품 생성
+`POST` 방식으로 상품 생성
+
+operation::resources-admin-product-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-product-put]]
+=== 상품 수정
+`PUT` 방식으로 상품 수정
+
+operation::resources-admin-product-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-product-delete]]
+=== 상품 삭제
+`DELETE` 방식으로 상품 삭제
+
+operation::resources-admin-product-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-product-list]]
+=== 관리자 상품 리스트
+
+operation::resources-admin-product-list[snippets='http-request,curl-request,request-headers,request-parameters,http-response,response-fields,links']
+
+
+[[resources-admin-product-get]]
+=== 관리자 상품 단건 조회
+
+operation::resources-admin-product-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-product-list]]
+=== 상품 리스트
+
+operation::resources-product-list[snippets='http-request,curl-request,request-parameters,http-response,response-fields,links']
+
+
+[[resources-product-get]]
+=== 상품 단건 조회
+
+operation::resources-product-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-brand]]
+== 브랜드
+
+[[resources-admin-brand-create]]
+=== 브랜드 생성
+`POST` 방식으로 브랜드 생성
+
+operation::resources-admin-brand-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-brand-put]]
+=== 브랜드 수정
+`PUT` 방식으로 브랜드 수정
+
+operation::resources-admin-brand-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-brand-delete]]
+=== 브랜드 삭제
+`DELETE` 방식으로 브랜드 삭제
+
+operation::resources-admin-brand-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resouces-admin-brand-list]]
+=== 브랜드 리스트
+
+operation::resources-admin-brand-list[snippets='http-request,request-parameters,curl-request,request-headers,http-response,response-fields,links']
+
+[[resouces-admin-brand-get]]
+=== 브랜드 단건 조회
+
+operation::resources-admin-brand-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resouces-brand-list]]
+=== 브랜드 리스트
+
+operation::resources-brand-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+[[resouces-brand-get]]
+=== 브랜드 단건 조회
+
+operation::resources-brand-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-banner]]
+== 배너
+
+[[resouces-admin-banner-create]]
+=== 배너 생성
+`POST` 방식으로 배너 생성
+
+operation::resources-admin-banner-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+
+[[resources-admin-banner-put]]
+=== 배너 수정
+`PUT` 방식으로 배너 수정
+
+operation::resources-admin-banner-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-banner-delete]]
+=== 배너 삭제
+`DELETE` 방식으로 배너 삭제
+
+operation::resources-admin-banner-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-banner-list]]
+=== 관리자 배너 리스트
+
+operation::resources-admin-banner-list[snippets='http-request,request-parameters,curl-request,request-headers,http-response,response-fields,links']
+
+
+[[resources-admin-banner-get]]
+=== 관리자 배너 단건 조회
+
+operation::resources-admin-banner-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-banner-list]]
+=== 배너 리스트
+
+operation::resources-banner-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+
+[[resources-banner-get]]
+=== 배너 단건 조회
+
+operation::resources-banner-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+
+[[resources-notice]]
+== 공지사항
+
+[[resources-admin-notice-create]]
+=== 공지사항 생성
+`POST` 방식으로 공지사항 생성
+
+operation::resources-admin-notice-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-notice-put]]
+=== 공지사항 수정
+`PUT` 방식으로 공지사항 수정
+
+operation::resources-admin-notice-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-notice-delete]]
+=== 공지사항 삭제
+`DELETE` 방식으로 공지사항 삭제
+
+operation::resources-admin-notice-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-notice-list]]
+=== 공지사항 리스트
+
+operation::resources-admin-notice-list[snippets='http-request,request-parameters,curl-request,request-headers,http-response,response-fields,links']
+
+
+[[resources-admin-notice-get]]
+=== 공지사항 단건 조회
+
+operation::resources-admin-notice-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-notice-list]]
+=== 공지사항 리스트
+
+operation::resources-notice-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+
+[[resources-notice-get]]
+=== 공지사항 단건 조회
+
+operation::resources-notice-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-event]]
+== 이벤트
+
+[[resources-admin-event-create]]
+=== 이벤트 생성
+
+operation::resources-admin-event-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-event-put]]
+=== 이벤트 수정
+`PUT` 방식으로 이벤트 수정
+
+operation::resources-admin-event-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-event-delete]]
+=== 이벤트 삭제
+`DELETE` 방식으로 이벤트 삭제
+
+operation::resources-admin-event-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
+
+[[resources-admin-event-list]]
+=== 이벤트 리스트
+
+operation::resources-admin-event-list[snippets='http-request,curl-request,request-headers,request-parameters,http-response,response-fields,links']
+
+
+[[resources-admin-event-get]]
+=== 이벤트 단건 조회
+
+operation::resources-admin-event-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-event-list]]
+=== 이벤트 리스트
+
+operation::resources-event-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+
+[[resources-event-get]]
+=== 이벤트 단건 조회
+
+operation::resources-event-get[snippets='http-request,curl-request,http-response,response-fields,links']
+
+[[resources-section]]
+== 섹션
+
+[[resources-admin-section-create]]
+=== 섹션 생성
+
+operation::resources-admin-section-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-section-put]]
+=== 섹션 수정
+
+operation::resources-admin-section-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-section-list]]
+=== 섹션 리스트
+
+operation::resources-admin-section-list[snippets='http-request,curl-request,request-headers,request-parameters,http-response,response-fields,links']
+
+[[resources-admin-section-get]]
+=== 섹션 단건 조회
+
+operation::resources-admin-section-get[snippets='http-request,curl-request,path-parameters,request-headers,http-response,response-fields,links']
+
+[[resources-section-list]]
+=== 클라이언트 섹션 리스트
+
+operation::resources-section-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+[[resources-section-get]]
+=== 클라이언트 단건 조회
+
+operation::resources-section-get[snippets='http-request,curl-request,path-parameters,http-response,response-fields,links']
+
+[[resources-pin]]
+== 핀
+
+[[resources-admin-pin-create]]
+=== 핀 생성
+
+operation::resources-admin-pin-create[snippets='http-request,curl-request,request-headers,request-fields,http-response,response-fields,links']
+
+[[resources-admin-pin-put]]
+=== 핀 수정
+
+operation::resources-admin-pin-put[snippets='http-request,curl-request,request-headers,path-parameters,request-fields,http-response,response-fields,links']
+
+[[resources-admin-pin-list]]
+=== 핀 리스트
+
+operation::resources-admin-pin-list[snippets='http-request,curl-request,request-headers,request-parameters,http-response,response-fields,links']
+
+[[resources-admin-pin-get]]
+=== 핀 단건 조회
+
+operation::resources-admin-section-get[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+
+[[resources-pin-list]]
+=== 클라이언트 핀 리스트
+
+operation::resources-pin-list[snippets='http-request,request-parameters,curl-request,http-response,response-fields,links']
+
+[[resources-pin-get]]
+=== 클라이언트 핀 단건 조회
+
+operation::resources-pin-get[snippets='http-request,curl-request,path-parameters,http-response,response-fields,links']
+
+
+//[[resources-events-get]]
+
+//=== 게임 조회
+//
+//`Get` 요청을 사용해서 기존 게임 스테이지 하나를 조회할 수 있다.
+//
+//operation::get-game[snippets='curl-request,http-request,path-parameters,http-response,response-fields,links']
+//
+//[[resources-events-update]]
+//=== 게임 수정
+//
+//`PUT` 요청을 사용해서 기존 게임 스테이지를 수정할 수 있다.
+//
+//operation::update-game[snippets='http-request,request-fields,http-response,response-fields,links']
+//
+//
+//[[resources-clearGame-list]]
+//=== 클리어한 게임 목록 조회
+//
+//`GET` 요청을 사용하여 서비스의 모든 클리어한 게임의 기록을 조회할 수 있다.
+//
+//operation::get-clearGames[snippets='http-request,http-response,response-headers,response-fields,links']
+//

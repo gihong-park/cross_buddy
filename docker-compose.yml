@@ -1,0 +1,47 @@
+version: "3.3"
+
+services:
+  # https://dev.mysql.com/doc/refman/8.0/en/docker-mysql-more-topics.html 참고
+  mysqldb:
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: 'health'
+      MYSQL_USER: 'health_admin'
+      MYSQL_PASSWORD: 'password_admin'
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      TZ: Asia/Seoul
+
+
+    ports:
+      - '3306:3306'
+    expose:
+      - "3306"
+#    volumes:
+#      - ./init-schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+    healthcheck:
+      test: [ 'CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root' ]
+      interval: 10s
+      timeout: 2s
+      retries: 100
+
+    command:
+      - 'mysqld'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--general-log=1'
+      - '--general-log-file=/var/lib/mysql/general-log.log'
+
+  app:
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    build: .
+    environment:
+      DATABASE_URL: 'jdbc:mysql://mysqldb:3306/health'
+      DATABASE_USER: 'health_admin'
+      DATABASE_PASSWORD: 'password_admin'
+    ports:
+      - 8080:8080
+

@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test_db
+    username: root
+    password:
+
+  jpa:
+#    https://docs.jboss.org/hibernate/orm/5.4/javadocs/org/hibernate/dialect/package-summary.html 참고
+    database-platform: org.hibernate.dialect.MySQL57Dialect # 추가 해준 부분
+
+    hibernate:
+      ddl-auto: create
+
+
+sql:
+  init:
+    mode: always

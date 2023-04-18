@@ -1,0 +1,53 @@
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate:
+#        jdbc:
+#          lob:
+#            non_contextual_creation: true
+#        format_sql: true
+
+  hateoas:
+    use-hal-as-default-json-media-type: true
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:data.sql
+  datasource:
+    initialization-mode: always
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+
+  jpa:
+    defer-datasource-initialization: true
+    #    https://docs.jboss.org/hibernate/orm/5.4/javadocs/org/hibernate/dialect/package-summary.html 참고
+    database-platform: org.hibernate.dialect.MySQLDialect # 추가 해준 부분
+
+    hibernate:
+      ddl-auto: create
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+      springframework:
+        security: DEBUG
+
+server:
+  error:
+    whitelabel:
+      enabled: false
