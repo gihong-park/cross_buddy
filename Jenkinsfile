@@ -12,7 +12,7 @@ pipeline {
       steps {
         withGradle() {
           echo 'Test Running'
-          sh 'sudo source ./gradlew test'
+          sh './gradlew test'
         }
 
       }
