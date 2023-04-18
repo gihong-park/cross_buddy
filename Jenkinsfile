@@ -10,11 +10,8 @@ pipeline {
 
     stage('test') {
       steps {
-        withGradle() {
-          echo 'Test Running'
-          sh './gradlew build'
-        }
-
+        echo 'Test'
+        sh './gradlew test'
       }
     }
 
