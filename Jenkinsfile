@@ -18,7 +18,7 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {
-          app = docker.build("hongpark/checkoutservice")
+          app = docker.build("hongpark/health")
         }
 
       }
