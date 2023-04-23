@@ -14,6 +14,6 @@ COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 COPY --from=build /workspace/app/build /app/target
 
-EXPOSE 8080
+EXPOSE 80
 
-ENTRYPOINT ["java", "-Dcom.amazonaws.sdk.disableEc2Metadata=true", "-Dspring.profiles.active=dev", "-cp", "app:app/lib/*","com.kihong.health.HealthApplication"]
+ENTRYPOINT ["java", "-Dcom.amazonaws.sdk.disableEc2Metadata=true", "-Dspring.profiles.active=prod", "-cp", "app:app/lib/*","com.kihong.health.HealthApplication"]
