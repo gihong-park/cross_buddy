@@ -37,5 +37,21 @@ pipeline {
       }
     }
 
+    stage('Push Manifest File') {
+      steps {
+        echo 'Push Manifest File'
+        git credentialsId: '$git-credential',
+            url: '$GIT_REPO_URL',
+            branch: '$BRANCH'
+
+        withCredentials([gitUsernamePassword(credentialsId: 'git-credential', gitToolName: 'git-tool')]) {
+            sh "helm template crossfit . --set images.tag=${env.BUILD_NUMBER} > ./kubernetes-manifests/kubernetes-manifests.yaml"
+            sh 'kubernetes-manifests/kubernetes-manifests.yaml'
+            sh "git commit -m '[UPDATE] checkoutservice ${env.BUILD_NUMBER} image versioning'"
+            sh 'git push origin main'
+        }
+      }
+    }
+
   }
 }

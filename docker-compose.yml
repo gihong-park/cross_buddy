@@ -43,5 +43,5 @@ services:
       DATABASE_USER: 'health_admin'
       DATABASE_PASSWORD: 'password_admin'
     ports:
-      - 8080:8080
+      - 9090:80
 
