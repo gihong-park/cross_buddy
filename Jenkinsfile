@@ -46,7 +46,7 @@ pipeline {
 
         withCredentials([gitUsernamePassword(credentialsId: 'git-credential', gitToolName: 'Default')]) {
             sh "helm template crossfit . --set images.tag=${env.BUILD_NUMBER} > ./kubernetes-manifests/kubernetes-manifests.yaml"
-            sh 'kubernetes-manifests/kubernetes-manifests.yaml'
+            sh 'git add kubernetes-manifests/kubernetes-manifests.yaml'
             sh "git commit -m '[UPDATE] cross-buddy ${env.BUILD_NUMBER} image versioning'"
             sh 'git push origin main'
         }
