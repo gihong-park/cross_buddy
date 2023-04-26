@@ -52,16 +52,12 @@ public class RecordServiceImpl implements RecordService{
         records = recordRepository.findRecordsByMovementRecordNameByUser_id(search, userId, pageable);
       }
     } else {
-      if(userId == null) {
-        throw new HttpException(ErrorCode.USER_FORBIDDEN, "User Forbidden");
-      }
       if(search == null) {
-        records = recordRepository.findByUser_id(userId, pageable);
+        records = recordRepository.findByUser_id(user.get().getId(), pageable);
       } else {
-        records = recordRepository.findRecordsByMovementRecordNameByUser_id(search, userId, pageable);
+        records = recordRepository.findRecordsByMovementRecordNameByUser_id(search, user.get().getId(), pageable);
       }
     }
-    records.getContent().stream().forEach(r -> System.out.println(r.getResult()));
 
     return records;
   }

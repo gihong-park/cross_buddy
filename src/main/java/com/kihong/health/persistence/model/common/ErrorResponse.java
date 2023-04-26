@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.http.ResponseEntity;
 
 @Getter
@@ -19,7 +20,7 @@ public class ErrorResponse {
   private final String details;
   private final String at;
 
-  public static ResponseEntity toResponseEntity(HttpException ex) {
+  public static ResponseEntity<ErrorResponse> toResponseEntity(HttpException ex) {
     return ResponseEntity
         .status(ex.getErrorCode()
             .getHttpStatus())
@@ -32,9 +33,8 @@ public class ErrorResponse {
                 .name())
             .code(ex.getErrorCode()
                 .getErrorCode())
-            .message(ex.getErrorCode()
-                .getDetail())
-            .details(ex.getMessage())
+            .message(ex.getMessage())
+            .details(ex.getErrorCode().getDetail())
             .build()
         );
   }
