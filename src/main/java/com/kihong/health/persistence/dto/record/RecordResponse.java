@@ -23,6 +23,7 @@ public class RecordResponse {
   private WorkoutOftheDayResponse wod;
 
   private LocalDate date;
+  private String description;
   private String note;
   private List<MovementRecord> movementRecords;
   private HashMap<String, Object> result;
@@ -30,7 +31,9 @@ public class RecordResponse {
   static public RecordResponse getValueFrom(Record record) {
     return RecordResponse.builder().id(record.getId())
         .user(UserResponse.getValueFrom(record.getUser())).date(record.getDate())
-        .note(record.getNote()).movementRecords(record.getMovementRecords()).result(record.getResult())
+        .description(record.getDescription())
+        .note(record.getNote()).movementRecords(record.getMovementRecords())
+        .result(record.getResult())
         .wod(WorkoutOftheDayResponse.getValueFrom(record.getWod())).build();
   }
 }

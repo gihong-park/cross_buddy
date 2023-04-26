@@ -46,6 +46,9 @@ public class Record extends BaseEntity {
   private WorkoutOftheDay wod;
 
   private LocalDate date;
+  @Column(columnDefinition = "TEXT")
+  private String description;
+  @Column(columnDefinition = "TEXT")
   private String note;
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @JsonManagedReference(value = "record")
@@ -57,6 +60,6 @@ public class Record extends BaseEntity {
   private HashMap<String, Object> result;
 
   static public Record getValueFrom(CreateRecord cr) {
-    return Record.builder().note(cr.getNote()).date(cr.getDate()).result(cr.getResult()).build();
+    return Record.builder().note(cr.getNote()).date(cr.getDate()).result(cr.getResult()).description(cr.getDescription()).build();
   }
 }

@@ -8,10 +8,10 @@ INSERT INTO user (created_at, is_deleted, updated_at, account_non_expired, accou
 ('2022-01-01 00:00:00.000000', false, '2022-01-01 00:00:00.000000', true, true, true, 'testuser1@example.com', true, 0, '2022-01-01 00:00:00.000000', 'password1', 0, 'testuser1'),
 ('2022-01-02 00:00:00.000000', false, '2022-01-02 00:00:00.000000', true, true, true, 'testuser2@example.com', true, 1, '2022-01-02 00:00:00.000000', 'password2', 2, 'testuser2'),
 ('2022-01-03 00:00:00.000000', false, '2022-01-03 00:00:00.000000', true, true, true, 'testuser3@example.com', true, 1, '2022-01-03 00:00:00.000000', 'password3', 0, 'testuser3');
-INSERT INTO record (created_at, is_deleted, updated_at, date, note, user_id, wod_id, result) VALUES
-('2022-01-01 00:00:00.000000', false, '2022-01-01 00:00:00.000000', '2022-01-01', 'note 1', 1, 1, '{"reps": 10, "time": "00:10:00"}',),
-('2022-01-02 00:00:00.000000', false, '2022-01-02 00:00:00.000000', '2022-01-02', 'note 2', 2, 2, '{"time": "13:00"}'),
-('2022-01-03 00:00:00.000000', false, '2022-01-03 00:00:00.000000', '2022-01-03', 'note 3', 3, 3, '{"reps": 213, "time": "14:00"}');
+INSERT INTO record (created_at, is_deleted, updated_at, date, note, user_id, wod_id, result, description) VALUES
+('2022-01-01 00:00:00.000000', false, '2022-01-01 00:00:00.000000', '2022-01-01', 'note 1', 1, 1, '{"time": "14:01"}', ""),
+('2022-01-02 00:00:00.000000', false, '2022-01-02 00:00:00.000000', '2022-01-02', 'note 2', 2, 2, '{"time": "13:00"}', ""),
+('2022-01-03 00:00:00.000000', false, '2022-01-03 00:00:00.000000', '2022-01-03', 'note 3', 3, 3, '{"reps": 213, "time": "14:00"}', "");
 INSERT INTO movement_record (id, created_at, is_deleted, updated_at, cal, distance, height, reps, weight, name, record_id, wod_id, ord)
 VALUES
 (1, NOW(), 0, NOW(), 50.0, 0.0, 0.0, 10, 70.0, 'Push Press', 1, null, 1),

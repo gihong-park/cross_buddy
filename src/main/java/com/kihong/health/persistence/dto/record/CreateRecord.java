@@ -21,6 +21,7 @@ public class CreateRecord {
 
   @NotNull
   private LocalDate date;
+  private String description;
   private String note;
   private List<CreateMovementRecord> movementRecords;
   private HashMap<String, Object> result;

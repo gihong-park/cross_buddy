@@ -20,6 +20,7 @@ public class UpdateRecord {
   private Long id;
   private Long wodId;
   private LocalDate date;
+  private String description;
   private String note;
   private List<MovementRecord> movementRecords;
   private HashMap<String, Object> result;

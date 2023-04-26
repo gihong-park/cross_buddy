@@ -126,7 +126,7 @@ class RecordControllerTest extends BaseControllerTest {
     String updateName = "update name1";
 
     List<MovementRecord> movementRecords = record.getMovementRecords().stream().map(
-            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt()).height(100)
+            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt()).updatedAt(mr.getUpdatedAt()).height(100)
                 .distance(mr.getDistance())
                 .cal(mr.getCal()).reps(mr.getReps()).name(changedName).build())
         .collect(Collectors.toList());

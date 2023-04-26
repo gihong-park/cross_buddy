@@ -41,7 +41,6 @@ public class RecordServiceImpl implements RecordService{
         throw new HttpException(ErrorCode.USER_FORBIDDEN, "User Forbidden");
       }
     }
-    System.out.print(user.get().getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.getRoleName())));
     if(user.get().getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.getRoleName())) || user.get().getAuthorities().contains(new SimpleGrantedAuthority(Role.MASTER.getRoleName())) ) {
       if(search == null && userId == null) {
         records = recordRepository.findAll(pageable);
@@ -74,12 +73,14 @@ public class RecordServiceImpl implements RecordService{
     if(!user.isEmpty()) {
       record.setUser(user.get());
     }
-    Optional<WorkoutOftheDay> wod = workoutOftheDayRepository.findById(createRecord.getWodId());
-    record.setWod(wod.get());
-    final Record result = recordRepository.saveAndFlush(record);
+    if(createRecord.getWodId() != null) {
+      Optional<WorkoutOftheDay> wod = workoutOftheDayRepository.findById(createRecord.getWodId());
+      record.setWod(wod.get());
+    }
+    final Record result = recordRepository.save(record);
     List<MovementRecord> mvList = createRecord.getMovementRecords().stream().map(cmr->modelMapper.map(cmr, MovementRecord.class)).toList();
     mvList.stream().forEach(mr -> mr.setRecord(result));
-    result.setMovementRecords(movementRecordRepository.saveAllAndFlush(mvList));
+    result.setMovementRecords(movementRecordRepository.saveAll(mvList));
 
     return result;
   }
@@ -91,7 +92,7 @@ public class RecordServiceImpl implements RecordService{
     Optional<Record> record = recordRepository.findById(updateRecord.getId());
     Optional<WorkoutOftheDay> wod = Optional.empty();
 
-    if(updateRecord.getWodId() != -1 ) {
+    if(updateRecord.getWodId() != null ) {
       wod = workoutOftheDayRepository.findById(updateRecord.getWodId());
       if(wod.isEmpty()) {
         throw new HttpException(ErrorCode.WOD_NOT_FOUND, "");
@@ -100,9 +101,6 @@ public class RecordServiceImpl implements RecordService{
     if(record.isEmpty()) {
       throw new HttpException(ErrorCode.RECORD_NOT_FOUND, "");
     }
-    if(user.isEmpty()) {
-      throw new HttpException(ErrorCode.USER_UNAUTHORIZED, "");
-    }
     if(user.get().getRole().getRoleName() == "ROLE_USER" && user.get().getId() != record.get().getUser().getId()) {
       throw new HttpException(ErrorCode.USER_FORBIDDEN, "");
     }
@@ -110,8 +108,9 @@ public class RecordServiceImpl implements RecordService{
       record.get().setWod(wod.get());
     }
     Record result = record.get();
-    List<MovementRecord> mrs =  updateRecord.getMovementRecords().stream().map(mr->MovementRecord.getValueFrom(mr)).map(mr->movementRecordRepository.saveAndFlush(mr)).toList();
+    List<MovementRecord> mrs =  updateRecord.getMovementRecords().stream().map(mr->MovementRecord.getValueFrom(mr)).map(mr->movementRecordRepository.save(mr)).toList();
 
+    result.setDescription(updateRecord.getDescription());
     result.setNote(updateRecord.getNote());
     result.setDate(updateRecord.getDate());
 

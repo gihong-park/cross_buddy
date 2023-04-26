@@ -48,7 +48,7 @@ pipeline {
           sh "git config --local user.email dev.gihong2012@gmail.com"
           sh "git config --local user.name gihong-park"
           sh "helm template crossfit . --set images.tag=${env.BUILD_NUMBER} > ./kubernetes-manifests/kubernetes-manifests.yaml"
-          sh 'git add kubernetes-manifests/kubernetes-manifests.yaml'
+          sh 'git add .'
           sh "git commit -m '[UPDATE] cross-buddy ${env.BUILD_NUMBER} image versioning'"
           sh 'git push origin main'
         }
