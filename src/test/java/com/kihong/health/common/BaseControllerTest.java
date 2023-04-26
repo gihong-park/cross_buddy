@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -88,8 +90,12 @@ public abstract class BaseControllerTest {
   static
   {
     composeContainer = new DockerComposeContainer(new File("src/test/resources/docker-compose.yml")).withExposedService("test-mysql", 3306);
-    composeContainer.start();
+  }
 
+  @DynamicPropertySource
+  static void mysqlProperties(DynamicPropertyRegistry registry) {
+    composeContainer.start();
+    registry.add("spring.datasource.url", ()-> String.format("jdbc:mysql://%s:%s/test_db",composeContainer.getServiceHost("test-mysql", 3306), composeContainer.getServicePort("test-mysql", 3306) ));
   }
 
 }
