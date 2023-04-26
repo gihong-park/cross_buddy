@@ -89,6 +89,7 @@ public abstract class BaseControllerTest {
   {
     composeContainer = new DockerComposeContainer(new File("src/test/resources/docker-compose.yml")).withExposedService("test-mysql", 3306);
     composeContainer.start();
+
   }
 
 }
