@@ -4,6 +4,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kihong.health.persistence.dto.user.SignInDTO;
+import com.kihong.health.persistence.dto.user.SignInResponse;
 import com.kihong.health.persistence.dto.user.SignUpDTO;
 import com.kihong.health.persistence.model.Gender;
 import com.kihong.health.persistence.model.User;
@@ -69,9 +70,9 @@ public abstract class BaseControllerTest {
         .getResponse()
         .getContentAsString();
 
-    return objectMapper.readValue(responseBody, Map.class)
-        .get("token")
-        .toString();
+
+    return "Bearer " + objectMapper.readValue(responseBody, SignInResponse.class)
+        .getTokenInfo().getAccessToken();
   }
 
   protected SignUpDTO getUserByRole(Role role) {
@@ -83,7 +84,6 @@ public abstract class BaseControllerTest {
       return masterUser;
     }
   }
-
 
   static final DockerComposeContainer composeContainer;
 

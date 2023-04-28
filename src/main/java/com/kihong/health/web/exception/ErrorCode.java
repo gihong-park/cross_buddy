@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
   BAD_REQUEST(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "잘못된 포멧입니다."),
+  TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED", "토큰이 만료 되었습니다."),
   RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD_404", "찾는 record가 존재하지 않습니다."),
   WOD_NOT_FOUND(HttpStatus.NOT_FOUND, "WOD_404", "찾는 wod가 존재하지 않습니다."),
   USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "USER_401", "로그인을 해주시기 바랍니다."),
