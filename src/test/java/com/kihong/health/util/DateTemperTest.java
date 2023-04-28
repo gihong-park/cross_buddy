@@ -1,6 +1,6 @@
 package com.kihong.health.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class DateTemperTest {
+
   final LocalDate sunday = LocalDate.of(2023, 4, 9);
   final LocalDate saturday = LocalDate.of(2023, 4, 9);
   final LocalDate friday = LocalDate.of(2023, 4, 9);
@@ -19,14 +20,14 @@ class DateTemperTest {
 
   @Test
   @DisplayName("DATETEMPER GET MONDAY OF WEEK")
-  void getFirstDayOfWeek () {
-    assertWeekEquals(monday, (date)-> DateTemper.getFirstDayOfWeek(date));
+  void getFirstDayOfWeek() {
+    assertWeekEquals(monday, (date) -> DateTemper.getFirstDayOfWeek(date));
   }
 
   @Test
   @DisplayName("DATETEMPER GET SUNDAY OF WEEK")
   void getLastDayOfWeek() {
-    assertWeekEquals(sunday, (date)-> DateTemper.getLastDayOfWeek(date));
+    assertWeekEquals(sunday, (date) -> DateTemper.getLastDayOfWeek(date));
   }
 
   void assertWeekEquals(LocalDate expectDate, Function<LocalDate, LocalDate> temper) {

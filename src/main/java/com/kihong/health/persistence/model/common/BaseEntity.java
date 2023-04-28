@@ -1,11 +1,12 @@
 package com.kihong.health.persistence.model.common;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,8 +14,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 
 @MappedSuperclass
@@ -24,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseEntity {
+
   @CreationTimestamp
   @CreatedDate
   private LocalDateTime createdAt;
@@ -38,6 +38,7 @@ public class BaseEntity {
   public boolean isDeleted() {
     return this.deleted;
   }
+
   public void setDeleted(boolean isDeleted) {
     this.deleted = isDeleted;
   }

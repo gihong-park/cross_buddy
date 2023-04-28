@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("test")
 class HealthApplicationTests extends BaseControllerTest {
 
-	@Test
-	void contextLoads() {
-	}
+  @Test
+  void contextLoads() {
+  }
 }

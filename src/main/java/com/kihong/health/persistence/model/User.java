@@ -111,7 +111,7 @@ public class User extends BaseEntity implements UserDetails {
     ADMIN("ROLE_ADMIN"),
     MASTER("ROLE_MASTER");
 
-    private String roleName;
+    private final String roleName;
 
     Role(String roleName) {
       this.roleName = roleName;

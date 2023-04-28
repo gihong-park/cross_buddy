@@ -6,20 +6,19 @@ import com.kihong.health.web.exception.ErrorCode;
 import com.kihong.health.web.exception.HttpException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.InvalidClaimException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,8 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class JwtTokenProvider { // JWT토큰 생성 및 유효성을 검증하는 컴포넌트
 
-  @Value("spring.jwt.secret") private String SECRET_KEY;
+  @Value("spring.jwt.secret")
+  private String SECRET_KEY;
 
   private final CustomUserDetailsService userDetailsService;
 
@@ -77,6 +77,7 @@ public class JwtTokenProvider { // JWT토큰 생성 및 유효성을 검증하�
         .refreshToken(refreshToken)
         .build();
   }
+
   // JWT 토큰에서 인증 정보 조회
   public Authentication getAuthentication(String token) {
     UserDetails userDetails =

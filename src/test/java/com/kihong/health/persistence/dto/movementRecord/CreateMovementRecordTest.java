@@ -20,9 +20,10 @@ class CreateMovementRecordTest {
     Set<ConstraintViolation<CreateMovementRecord>> validate = validator.validate(
         createMovementRecord);
 
-
     assertEquals(validate.size(), 1);
-    assertEquals("[ConstraintViolationImpl{interpolatedMessage='must not be empty', propertyPath=name, rootBeanClass=class com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord, messageTemplate='{jakarta.validation.constraints.NotEmpty.message}'}]", validate.toString());
+    assertEquals(
+        "[ConstraintViolationImpl{interpolatedMessage='must not be empty', propertyPath=name, rootBeanClass=class com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord, messageTemplate='{jakarta.validation.constraints.NotEmpty.message}'}]",
+        validate.toString());
     assertEquals("name", validate.stream().findFirst().get().getPropertyPath().toString());
     assertEquals("must not be empty", validate.stream().findFirst().get().getMessage());
   }

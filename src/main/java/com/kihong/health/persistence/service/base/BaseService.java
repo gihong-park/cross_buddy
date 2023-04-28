@@ -5,8 +5,9 @@ import java.util.Optional;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public interface BaseService {
+
   default Optional<User> getUserContext() {
-    if(SecurityContextHolder.getContext().getAuthentication() == null) {
+    if (SecurityContextHolder.getContext().getAuthentication() == null) {
       return Optional.empty();
     }
     User user = (User) SecurityContextHolder.getContext()

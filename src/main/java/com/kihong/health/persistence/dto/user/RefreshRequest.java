@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class RefreshRequest {
+
   @NotEmpty
   private String refreshToken;
   @NotNull

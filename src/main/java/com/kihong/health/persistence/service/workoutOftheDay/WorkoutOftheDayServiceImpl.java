@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class WorkoutOftheDayServiceImpl implements WorkoutOftheDayService{
+public class WorkoutOftheDayServiceImpl implements WorkoutOftheDayService {
 
   final WorkoutOftheDayRepository wodRepository;
   final MovementRecordRepository mrRepository;

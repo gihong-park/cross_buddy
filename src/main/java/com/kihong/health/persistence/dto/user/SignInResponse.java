@@ -1,9 +1,7 @@
 package com.kihong.health.persistence.dto.user;
 
 import com.kihong.health.persistence.model.User;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class WorkoutOftheDayTest {
+
   Long id = Long.valueOf(1);
   String value = "value";
   String description = """
@@ -65,9 +66,9 @@ public class WorkoutOftheDayTest {
   @DisplayName("WOD_SET_TEST")
   public void wodSetTest() {
     Long setId = Long.valueOf(2);
-    String setName= "set name";
+    String setName = "set name";
     String setType = "set Type";
-    String setDescription= """
+    String setDescription = """
         #Warm Ups
         3 Rounds 45 ON : 15 OFF
         • Jumping Jacks
@@ -90,7 +91,6 @@ public class WorkoutOftheDayTest {
         """;
     boolean setIsDeleted = true;
     LocalDate setDate = LocalDate.now();
-
 
     wod.setId(setId);
     wod.setName(setName);

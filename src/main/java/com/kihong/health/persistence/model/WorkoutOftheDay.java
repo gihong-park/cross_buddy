@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +31,7 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutOftheDay extends BaseEntity {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "wod_id")
@@ -42,15 +42,16 @@ public class WorkoutOftheDay extends BaseEntity {
   private String description;
   private LocalDate date;
   @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-  @JsonManagedReference(value="wod")
+  @JsonManagedReference(value = "wod")
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name="wod_id", insertable = false, updatable = false, nullable = true)
+  @JoinColumn(name = "wod_id", insertable = false, updatable = false, nullable = true)
   private List<MovementRecord> movementRecords;
   @Type(JsonType.class)
   @Column(columnDefinition = "json")
   private HashMap<String, Object> result;
 
   public static WorkoutOftheDay getValueFrom(CreateWorkoutOftheDay cwod) {
-    return WorkoutOftheDay.builder().date(cwod.getDate()).description(cwod.getDescription()).name(cwod.getName()).type(cwod.getType()).result(cwod.getResult()).build();
+    return WorkoutOftheDay.builder().date(cwod.getDate()).description(cwod.getDescription())
+        .name(cwod.getName()).type(cwod.getType()).result(cwod.getResult()).build();
   }
 }

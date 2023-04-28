@@ -1,6 +1,5 @@
 package com.kihong.health.persistence.dto.user;
 
-import com.kihong.health.persistence.model.Gender;
 import com.kihong.health.persistence.model.User.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignUpDTO {
+
   @NotEmpty
   private String username;
   @NotEmpty

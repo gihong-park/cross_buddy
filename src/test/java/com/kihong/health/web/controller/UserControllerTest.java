@@ -77,8 +77,10 @@ class UserControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(getRefreshRequest(expired)))
     );
 
-    ResultActions expect = perform.andDo(print()).andExpect(status().isUnauthorized()).andExpect(jsonPath("code").value(
-        ErrorCode.TOKEN_EXPIRED.getErrorCode())).andExpect(jsonPath("details").value(ErrorCode.TOKEN_EXPIRED.getDetail()));
+    ResultActions expect = perform.andDo(print()).andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("code").value(
+            ErrorCode.TOKEN_EXPIRED.getErrorCode()))
+        .andExpect(jsonPath("details").value(ErrorCode.TOKEN_EXPIRED.getDetail()));
 
   }
 
@@ -94,8 +96,10 @@ class UserControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(refreshRequest))
     );
 
-    ResultActions expect = perform.andDo(print()).andExpect(status().isBadRequest()).andExpect(jsonPath("code").value(
-        ErrorCode.BAD_REQUEST.getErrorCode())).andExpect(jsonPath("details").value(ErrorCode.BAD_REQUEST.getDetail()));
+    ResultActions expect = perform.andDo(print()).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("code").value(
+            ErrorCode.BAD_REQUEST.getErrorCode()))
+        .andExpect(jsonPath("details").value(ErrorCode.BAD_REQUEST.getDetail()));
 
   }
 
@@ -111,8 +115,10 @@ class UserControllerTest extends BaseControllerTest {
         .content(objectMapper.writeValueAsString(refreshRequest))
     );
 
-    ResultActions expect = perform.andDo(print()).andExpect(status().isBadRequest()).andExpect(jsonPath("code").value(
-        ErrorCode.BAD_REQUEST.getErrorCode())).andExpect(jsonPath("details").value(ErrorCode.BAD_REQUEST.getDetail()));
+    ResultActions expect = perform.andDo(print()).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("code").value(
+            ErrorCode.BAD_REQUEST.getErrorCode()))
+        .andExpect(jsonPath("details").value(ErrorCode.BAD_REQUEST.getDetail()));
   }
 
   RefreshRequest getRefreshRequest(long expired) {

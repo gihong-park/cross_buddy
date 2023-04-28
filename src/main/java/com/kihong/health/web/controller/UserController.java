@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
@@ -27,49 +26,53 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
+
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
-  private long expired = 86400000;
+  private final long expired = 86400000;
 
 
   @PostMapping("/signin")
   public ResponseEntity SignIn(@RequestBody @Valid SignInDTO signIn, Errors errors) {
-    if(errors.hasErrors()) {
-      throw new HttpException(ErrorCode.BAD_REQUEST ,errors.toString());
+    if (errors.hasErrors()) {
+      throw new HttpException(ErrorCode.BAD_REQUEST, errors.toString());
     }
 
     Optional<User> getUser = userRepository.findByEmail(signIn.getUsernameOremail());
     if (getUser.isEmpty()) {
       getUser = userRepository.findByUsername(signIn.getUsernameOremail());
     }
-    if(getUser.isEmpty()) {
-      throw new HttpException(ErrorCode.USER_NOT_FOUND,  "User doesn't exist");
+    if (getUser.isEmpty()) {
+      throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
     }
-    if(!passwordEncoder.matches(signIn.getPassword(), getUser.get().getPassword())) {
+    if (!passwordEncoder.matches(signIn.getPassword(), getUser.get().getPassword())) {
       throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
     }
 
-    TokenInfo tokenInfo = jwtTokenProvider.createToken(getUser.get().getEmail(), getUser.get().getAuthorities(), this.expired);
+    TokenInfo tokenInfo = jwtTokenProvider.createToken(getUser.get().getEmail(),
+        getUser.get().getAuthorities(), this.expired);
     return ResponseEntity.ok(SignInResponse.getValueFrom(getUser.get(), tokenInfo));
 
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity RefreshToken(@RequestBody @Valid RefreshRequest refreshRequest, Errors errors) {
-    if(errors.hasErrors()) {
+  public ResponseEntity RefreshToken(@RequestBody @Valid RefreshRequest refreshRequest,
+      Errors errors) {
+    if (errors.hasErrors()) {
       throw new HttpException(ErrorCode.BAD_REQUEST, errors.toString());
     }
-    if(!jwtTokenProvider.validateToken(refreshRequest.getRefreshToken())) {
+    if (!jwtTokenProvider.validateToken(refreshRequest.getRefreshToken())) {
       throw new HttpException(ErrorCode.BAD_REQUEST, "잘못된 토큰입니다.");
     }
     String email = jwtTokenProvider.getUserPk(refreshRequest.getRefreshToken());
     Optional<User> user = userRepository.findByEmail(email);
-    if(user.isEmpty()) {
-      throw new HttpException(ErrorCode.USER_NOT_FOUND,  "User doesn't exist");
+    if (user.isEmpty()) {
+      throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
     }
 
-    TokenInfo tokenInfo = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getAuthorities(), this.expired);
+    TokenInfo tokenInfo = jwtTokenProvider.createToken(user.get().getEmail(),
+        user.get().getAuthorities(), this.expired);
 
     return ResponseEntity.ok(tokenInfo);
   }

@@ -1,6 +1,6 @@
 package com.kihong.health.persistence.service.workoutOftheDay;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.kihong.health.common.BaseControllerTest;
 import com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class WorkoutOftheDayServiceImplTest extends BaseControllerTest {
+
   @Autowired
   WorkoutOftheDayService wodService;
 
@@ -23,15 +24,16 @@ class WorkoutOftheDayServiceImplTest extends BaseControllerTest {
 
     CreateMovementRecord cmr = CreateMovementRecord.builder().name("Row").cal(20)
         .build();
-    CreateWorkoutOftheDay cwod = CreateWorkoutOftheDay.builder().date(date).name("test 1").type("test type 1").description("test description 1").cmrList(
-        List.of(cmr)).build();
+    CreateWorkoutOftheDay cod = CreateWorkoutOftheDay.builder().date(date).name("test 1")
+        .type("test type 1").description("test description 1").cmrList(
+            List.of(cmr)).build();
 
-    WorkoutOftheDay wod =  wodService.createWOD(cwod);
+    WorkoutOftheDay wod = wodService.createWOD(cod);
 
-    assertEquals(date ,wod.getDate());
-    assertEquals(cwod.getName(), wod.getName());
-    assertEquals(cwod.getType(), wod.getType());
-    assertEquals(cwod.getDescription(), wod.getDescription());
+    assertEquals(date, wod.getDate());
+    assertEquals(cod.getName(), wod.getName());
+    assertEquals(cod.getType(), wod.getType());
+    assertEquals(cod.getDescription(), wod.getDescription());
 
   }
 }

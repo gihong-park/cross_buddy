@@ -1,4 +1,5 @@
 package com.kihong.health.config;
+
 import com.kihong.health.persistence.service.user.CustomUserDetailsService;
 import com.kihong.health.web.secure.JwtAuthenticationFilter;
 import com.kihong.health.web.secure.JwtTokenProvider;
@@ -10,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,7 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
+public class SecurityConfig {
+
   private final JwtTokenProvider jwtTokenProvider;
   private final CustomUserDetailsService userDetailsService;
   private final PasswordEncoder passwordEncoder;
@@ -47,9 +48,11 @@ public class SecurityConfig  {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeHttpRequests()
-        .requestMatchers(HttpMethod.GET, "/api/v1/user/signin", "/api/v1/user/signup", "/api/v1/movement", "/api/v1/wod", "/actuator/**", "/actuator", "/docs/**")
+        .requestMatchers(HttpMethod.GET, "/api/v1/user/signin", "/api/v1/user/signup",
+            "/api/v1/movement", "/api/v1/wod", "/actuator/**", "/actuator", "/docs/**")
         .permitAll()
-        .requestMatchers(HttpMethod.POST, "/api/v1/user/signin", "/api/v1/user/signup", "/api/v1/user/refresh")
+        .requestMatchers(HttpMethod.POST, "/api/v1/user/signin", "/api/v1/user/signup",
+            "/api/v1/user/refresh")
         .permitAll()
         .requestMatchers(HttpMethod.GET, "/api/v1/record")
         .hasRole("USER")
@@ -63,7 +66,8 @@ public class SecurityConfig  {
         .exceptionHandling()
         .and()
         .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-            UsernamePasswordAuthenticationFilter.class).authenticationProvider(authenticationProvider()).build();
+            UsernamePasswordAuthenticationFilter.class)
+        .authenticationProvider(authenticationProvider()).build();
   }
 
   @Bean

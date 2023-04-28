@@ -1,6 +1,5 @@
 package com.kihong.health.persistence.dto.record;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;

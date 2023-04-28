@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 import org.springframework.http.ResponseEntity;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class ErrorResponse {
+
   private final String timestamp = LocalDateTime.now().toString();
   private final int status;
   private final String error;

@@ -18,9 +18,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -60,6 +58,7 @@ public class Record extends BaseEntity {
   private HashMap<String, Object> result;
 
   static public Record getValueFrom(CreateRecord cr) {
-    return Record.builder().note(cr.getNote()).date(cr.getDate()).result(cr.getResult()).description(cr.getDescription()).build();
+    return Record.builder().note(cr.getNote()).date(cr.getDate()).result(cr.getResult())
+        .description(cr.getDescription()).build();
   }
 }

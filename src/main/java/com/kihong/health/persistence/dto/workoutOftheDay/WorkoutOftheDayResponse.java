@@ -23,6 +23,8 @@ public class WorkoutOftheDayResponse {
 
 
   static public WorkoutOftheDayResponse getValueFrom(WorkoutOftheDay wod) {
-    return WorkoutOftheDayResponse.builder().id(wod.getId()).name(wod.getName()).type(wod.getType()).description(wod.getDescription()).date(wod.getDate()).movementRecords(wod.getMovementRecords()).result(wod.getResult()).build();
+    return WorkoutOftheDayResponse.builder().id(wod.getId()).name(wod.getName()).type(wod.getType())
+        .description(wod.getDescription()).date(wod.getDate())
+        .movementRecords(wod.getMovementRecords()).result(wod.getResult()).build();
   }
 }

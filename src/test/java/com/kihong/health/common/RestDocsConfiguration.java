@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 
 @TestConfiguration
 public class RestDocsConfiguration {
+
   @Bean
   public RestDocsMockMvcConfigurationCustomizer restDocsMockMvcConfigurationCustomizer() {
     return configurer -> configurer.operationPreprocessors()

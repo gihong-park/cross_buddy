@@ -13,6 +13,8 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
   Page<Record> findRecordsByMovementRecordName(@Param("name") String name, Pageable pageable);
 
   Page<Record> findByUser_id(Long id, Pageable pageable);
+
   @Query(value = "SELECT r FROM Record r JOIN FETCH r.movementRecords mr WHERE mr.name = :name and r.user.id = :user_id", countQuery = "SELECT COUNT(r) FROM Record r JOIN r.movementRecords mr WHERE mr.name = :name and r.user.id = :user_id")
-  Page<Record> findRecordsByMovementRecordNameByUser_id(@Param("name") String name, @Param("user_id") Long userId, Pageable pageable);
+  Page<Record> findRecordsByMovementRecordNameByUser_id(@Param("name") String name,
+      @Param("user_id") Long userId, Pageable pageable);
 }

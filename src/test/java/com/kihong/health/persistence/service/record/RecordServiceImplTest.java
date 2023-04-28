@@ -8,7 +8,6 @@ import com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord;
 import com.kihong.health.persistence.dto.record.CreateRecord;
 import com.kihong.health.persistence.model.Record;
 import com.kihong.health.persistence.repository.MovementRecordRepository;
-import com.kihong.health.persistence.repository.RecordRepository;
 import com.kihong.health.persistence.repository.UserRepository;
 import com.kihong.health.persistence.repository.WorkoutOftheDayRepository;
 import java.time.LocalDate;
@@ -20,15 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class RecordServiceImplTest extends BaseControllerTest {
 
   @Autowired
-  protected WorkoutOftheDayRepository workoutOftheDayRepository;
-  @Autowired
-  ObjectMapper objectMapper;
-  @Autowired
   private RecordService recordService;
-  @Autowired
-  private MovementRecordRepository movementRecordRepository;
-  @Autowired
-  private UserRepository userRepository;
 
   @Test
   @DisplayName("CREATE RECORD TEST")

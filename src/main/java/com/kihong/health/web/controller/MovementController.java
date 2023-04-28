@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/v1/movement")
 public class MovementController {
+
   final MovementRepository movementRepository;
 
   @GetMapping

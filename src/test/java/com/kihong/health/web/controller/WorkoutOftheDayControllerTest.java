@@ -30,8 +30,7 @@ class WorkoutOftheDayControllerTest extends BaseControllerTest {
 
     ResultActions expect = result.andDo(print()).andExpect(status().isOk())
         .andExpect(jsonPath("content").exists())
-        .andExpect(jsonPath("content[0].date").exists())
-        ;
+        .andExpect(jsonPath("content[0].date").exists());
   }
 
   @Test

@@ -15,9 +15,6 @@ import com.kihong.health.persistence.dto.record.UpdateRecord;
 import com.kihong.health.persistence.model.MovementRecord;
 import com.kihong.health.persistence.model.Record;
 import com.kihong.health.persistence.model.User.Role;
-import com.kihong.health.persistence.repository.MovementRecordRepository;
-import com.kihong.health.persistence.repository.UserRepository;
-import com.kihong.health.persistence.repository.WorkoutOftheDayRepository;
 import com.kihong.health.persistence.service.record.RecordService;
 import com.kihong.health.web.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -36,12 +33,7 @@ class RecordControllerTest extends BaseControllerTest {
 
   @Autowired
   ObjectMapper objectMapper;
-  @Autowired
-  UserRepository userRepository;
-  @Autowired
-  WorkoutOftheDayRepository workoutOftheDayRepository;
-  @Autowired
-  MovementRecordRepository movementRecordRepository;
+
   @Autowired
   RecordService recordService;
 
@@ -65,7 +57,8 @@ class RecordControllerTest extends BaseControllerTest {
   @DisplayName("FORBIDDEN LIST RECORD")
   void forbiddenListRecord() throws Exception {
     ResultActions result = this.mockMvc.perform(
-        get("/api/v1/record").param("id", "1").header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.USER)));
+        get("/api/v1/record").param("id", "1")
+            .header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.USER)));
 
     ResultActions expect = result.andDo(print()).andExpect(status().isForbidden())
         .andExpect(jsonPath("timestamp").exists())
@@ -73,8 +66,7 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("error").value(ErrorCode.USER_FORBIDDEN.getHttpStatus().name()))
         .andExpect(jsonPath("code").value(ErrorCode.USER_FORBIDDEN.getErrorCode()))
         .andExpect(jsonPath("message").value("User Forbidden"))
-        .andExpect(jsonPath("details").value(ErrorCode.USER_FORBIDDEN.getDetail()))
-        ;
+        .andExpect(jsonPath("details").value(ErrorCode.USER_FORBIDDEN.getDetail()));
   }
 
   @Test
@@ -129,8 +121,7 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("wod").exists())
         .andExpect(jsonPath("note").exists())
         .andExpect(jsonPath("date").exists())
-        .andExpect(jsonPath("result").exists())
-        ;
+        .andExpect(jsonPath("result").exists());
   }
 
   @Test
@@ -143,7 +134,8 @@ class RecordControllerTest extends BaseControllerTest {
     String updateName = "update name1";
 
     List<MovementRecord> movementRecords = record.getMovementRecords().stream().map(
-            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt()).updatedAt(mr.getUpdatedAt()).height(100)
+            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt())
+                .updatedAt(mr.getUpdatedAt()).height(100)
                 .distance(mr.getDistance())
                 .cal(mr.getCal()).reps(mr.getReps()).name(changedName).build())
         .collect(Collectors.toList());
@@ -163,8 +155,7 @@ class RecordControllerTest extends BaseControllerTest {
     ResultActions expect = result.andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("id").exists())
-        .andExpect(jsonPath("note").value(changedNote))
-        ;
+        .andExpect(jsonPath("note").value(changedNote));
   }
 
   @Test
@@ -177,7 +168,8 @@ class RecordControllerTest extends BaseControllerTest {
     String updateName = "update name1";
 
     List<MovementRecord> movementRecords = record.getMovementRecords().stream().map(
-            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt()).updatedAt(mr.getUpdatedAt()).height(100)
+            mr -> MovementRecord.builder().id(mr.getId()).createdAt(mr.getCreatedAt())
+                .updatedAt(mr.getUpdatedAt()).height(100)
                 .distance(mr.getDistance())
                 .cal(mr.getCal()).reps(mr.getReps()).name(changedName).build())
         .collect(Collectors.toList());
@@ -202,7 +194,6 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("error").value(ErrorCode.RECORD_NOT_FOUND.getHttpStatus().name()))
         .andExpect(jsonPath("code").value(ErrorCode.RECORD_NOT_FOUND.getErrorCode()))
         .andExpect(jsonPath("message").value(""))
-        .andExpect(jsonPath("details").value(ErrorCode.RECORD_NOT_FOUND.getDetail()))
-        ;
+        .andExpect(jsonPath("details").value(ErrorCode.RECORD_NOT_FOUND.getDetail()));
   }
 }

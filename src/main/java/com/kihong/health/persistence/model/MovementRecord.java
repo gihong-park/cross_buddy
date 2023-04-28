@@ -55,11 +55,14 @@ public class MovementRecord extends BaseEntity {
   private float height = 0;
 
   public static MovementRecord getValueFrom(CreateMovementRecord cmr) {
-    return MovementRecord.builder().name(cmr.getName()).ord(cmr.getOrd()).reps(cmr.getReps()).cal(cmr.getCal())
+    return MovementRecord.builder().name(cmr.getName()).ord(cmr.getOrd()).reps(cmr.getReps())
+        .cal(cmr.getCal())
         .distance(cmr.getDistance()).height(cmr.getHeight()).build();
   }
+
   public static MovementRecord getValueFrom(MovementRecord mr) {
-    return MovementRecord.builder().id(mr.getId()).ord(mr.getOrd()).record(mr.getRecord()).wod(mr.getWod()).name(mr.getName()).reps(mr.getReps()).cal(mr.getCal())
+    return MovementRecord.builder().id(mr.getId()).ord(mr.getOrd()).record(mr.getRecord())
+        .wod(mr.getWod()).name(mr.getName()).reps(mr.getReps()).cal(mr.getCal())
         .distance(mr.getDistance()).height(mr.getHeight()).createdAt(mr.getCreatedAt()).build();
   }
 }
