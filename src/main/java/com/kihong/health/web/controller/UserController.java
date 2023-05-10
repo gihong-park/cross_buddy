@@ -1,7 +1,7 @@
 package com.kihong.health.web.controller;
 
 import com.kihong.health.persistence.dto.user.RefreshRequest;
-import com.kihong.health.persistence.dto.user.SignInDTO;
+import com.kihong.health.persistence.dto.user.SignInRequest;
 import com.kihong.health.persistence.dto.user.SignInResponse;
 import com.kihong.health.persistence.dto.user.TokenInfo;
 import com.kihong.health.persistence.model.User;
@@ -34,7 +34,7 @@ public class UserController {
 
 
   @PostMapping("/signin")
-  public ResponseEntity SignIn(@RequestBody @Valid SignInDTO signIn, Errors errors) {
+  public ResponseEntity SignIn(@RequestBody @Valid SignInRequest signIn, Errors errors) {
     if (errors.hasErrors()) {
       throw new HttpException(ErrorCode.BAD_REQUEST, errors.toString());
     }

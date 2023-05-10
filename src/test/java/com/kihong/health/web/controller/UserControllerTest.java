@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.kihong.health.common.BaseControllerTest;
 import com.kihong.health.persistence.dto.user.RefreshRequest;
-import com.kihong.health.persistence.dto.user.SignInDTO;
-import com.kihong.health.persistence.dto.user.SignUpDTO;
+import com.kihong.health.persistence.dto.user.SignInRequest;
+import com.kihong.health.persistence.dto.user.SignUpRequest;
 import com.kihong.health.persistence.dto.user.TokenInfo;
 import com.kihong.health.persistence.model.User;
 import com.kihong.health.persistence.model.User.Role;
@@ -33,15 +33,15 @@ class UserControllerTest extends BaseControllerTest {
   @Test
   @DisplayName("SIGN IN USER TEST")
   void signIn() throws Exception {
-    SignUpDTO signUpDTO = getUserByRole(Role.USER);
+    SignUpRequest signUpRequest = getUserByRole(Role.USER);
 
-    SignInDTO signInDTO = SignInDTO.builder()
-        .usernameOremail(signUpDTO.getEmail())
-        .password(signUpDTO.getPassword())
+    SignInRequest signInRequest = SignInRequest.builder()
+        .usernameOremail(signUpRequest.getEmail())
+        .password(signUpRequest.getPassword())
         .build();
     ResultActions perform = this.mockMvc.perform(post("/api/v1/user/signin")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(signInDTO)));
+        .content(objectMapper.writeValueAsString(signInRequest)));
 
     perform.andDo(print())
         .andExpect(status().isOk())
@@ -122,7 +122,7 @@ class UserControllerTest extends BaseControllerTest {
   }
 
   RefreshRequest getRefreshRequest(long expired) {
-    SignUpDTO user = this.getUserByRole(Role.USER);
+    SignUpRequest user = this.getUserByRole(Role.USER);
 
     Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
 

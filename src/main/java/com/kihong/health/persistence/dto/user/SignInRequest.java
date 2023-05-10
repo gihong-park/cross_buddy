@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignInDTO {
+public class SignInRequest {
 
   @NotEmpty
   private String usernameOremail;

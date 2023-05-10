@@ -1,6 +1,6 @@
 package com.kihong.health.persistence.service.user;
 
-import com.kihong.health.persistence.dto.user.SignUpDTO;
+import com.kihong.health.persistence.dto.user.SignUpRequest;
 import com.kihong.health.persistence.model.User;
 import com.kihong.health.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +15,16 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   @Override
-  public User createUser(SignUpDTO signUpDTO) {
-    String email = signUpDTO.getEmail();
-    String username = signUpDTO.getUsername();
-    String password = passwordEncoder.encode(signUpDTO.getPassword());
+  public User createUser(SignUpRequest signUpRequest) {
+    String email = signUpRequest.getEmail();
+    String username = signUpRequest.getUsername();
+    String password = passwordEncoder.encode(signUpRequest.getPassword());
 
     User user = User.builder()
         .username(username)
         .password(password)
         .email(email)
-        .role(signUpDTO.getRole())
+        .role(signUpRequest.getRole())
         .build();
 
     User createdUser = userRepository.save(user);

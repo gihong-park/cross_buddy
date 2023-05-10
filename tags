@@ -181,8 +181,8 @@ createRecord	src/main/java/com/kihong/health/web/controller/RecordController.jav
 createRecord	src/test/java/com/kihong/health/web/controller/RecordControllerTest.java	/^  void createRecord() throws Exception {$/;"	m	class:RecordControllerTest
 createRecordTest	src/test/java/com/kihong/health/persistence/service/record/RecordServiceImplTest.java	/^  void createRecordTest() {$/;"	m	class:RecordServiceImplTest
 createToken	src/main/java/com/kihong/health/web/secure/JwtTokenProvider.java	/^  public String createToken(String userPk,$/;"	m	class:JwtTokenProvider
-createUser	src/main/java/com/kihong/health/persistence/service/user/UserService.java	/^  User createUser(SignUpDTO signUpDTO);$/;"	m	interface:UserService
-createUser	src/main/java/com/kihong/health/persistence/service/user/UserServiceImpl.java	/^  public User createUser(SignUpDTO signUpDTO) {$/;"	m	class:UserServiceImpl
+createUser	src/main/java/com/kihong/health/persistence/service/user/UserService.java	/^  User createUser(SignUpDTO signUpRequest);$/;"	m	interface:UserService
+createUser	src/main/java/com/kihong/health/persistence/service/user/UserServiceImpl.java	/^  public User createUser(SignUpDTO signUpRequest) {$/;"	m	class:UserServiceImpl
 createWOD	src/main/java/com/kihong/health/persistence/service/workoutOftheDay/WorkoutOftheDayService.java	/^  WorkoutOftheDay createWOD(CreateWorkoutOftheDay cwod);$/;"	m	interface:WorkoutOftheDayService
 createWOD	src/main/java/com/kihong/health/persistence/service/workoutOftheDay/WorkoutOftheDayServiceImpl.java	/^  public WorkoutOftheDay createWOD(CreateWorkoutOftheDay cwod) {$/;"	m	class:WorkoutOftheDayServiceImpl
 createWOD	src/main/java/com/kihong/health/web/controller/WorkoutOftheDayController.java	/^  public ResponseEntity createWOD(@RequestBody @Valid CreateWorkoutOftheDay createWOD) {$/;"	m	class:WorkoutOftheDayController

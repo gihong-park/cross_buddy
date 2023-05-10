@@ -113,7 +113,7 @@ public class JwtTokenProvider { // JWT토큰 생성 및 유효성을 검증하�
     } catch (SignatureException | MalformedJwtException e) {
       log.info("Invalid JWT Token", e);
     } catch (ExpiredJwtException e) {
-      log.info("Expired JWT Token", e);
+      log.info("Expired JWT Token", e.getMessage());
       throw new HttpException(ErrorCode.TOKEN_EXPIRED, ErrorCode.TOKEN_EXPIRED.getDetail());
     } catch (UnsupportedJwtException e) {
       log.info("Unsupported JWT Token", e);

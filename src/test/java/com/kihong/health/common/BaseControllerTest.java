@@ -3,9 +3,9 @@ package com.kihong.health.common;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kihong.health.persistence.dto.user.SignInDTO;
+import com.kihong.health.persistence.dto.user.SignInRequest;
 import com.kihong.health.persistence.dto.user.SignInResponse;
-import com.kihong.health.persistence.dto.user.SignUpDTO;
+import com.kihong.health.persistence.dto.user.SignUpRequest;
 import com.kihong.health.persistence.model.User.Role;
 import com.kihong.health.persistence.service.user.UserService;
 import java.io.File;
@@ -40,11 +40,11 @@ public abstract class BaseControllerTest {
   @Autowired
   protected UserService userService;
 
-  protected SignUpDTO normalUser = SignUpDTO.builder().email("normal_user@example.com")
+  protected SignUpRequest normalUser = SignUpRequest.builder().email("normal_user@example.com")
       .username("normal_user").password("password1").role(Role.USER).build();
-  protected SignUpDTO adminUser = SignUpDTO.builder().email("admin_user@example.com")
+  protected SignUpRequest adminUser = SignUpRequest.builder().email("admin_user@example.com")
       .username("admin_user").password("password2").role(Role.ADMIN).build();
-  protected SignUpDTO masterUser = SignUpDTO.builder().email("master_user@example.com")
+  protected SignUpRequest masterUser = SignUpRequest.builder().email("master_user@example.com")
       .username("master_user").password("password3").role(Role.MASTER).build();
   @Autowired
   protected ObjectMapper objectMapper;
@@ -57,14 +57,14 @@ public abstract class BaseControllerTest {
   }
 
   protected String getAccessToken(Role role) throws Exception {
-    SignUpDTO signUpDTO = getUserByRole(role);
-    SignInDTO signInDTO = SignInDTO.builder()
-        .usernameOremail(signUpDTO.getEmail())
-        .password(signUpDTO.getPassword())
+    SignUpRequest signUpRequest = getUserByRole(role);
+    SignInRequest signInRequest = SignInRequest.builder()
+        .usernameOremail(signUpRequest.getEmail())
+        .password(signUpRequest.getPassword())
         .build();
     ResultActions perform = this.mockMvc.perform(post("/api/v1/user/signin")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(signInDTO)));
+        .content(objectMapper.writeValueAsString(signInRequest)));
 
     var responseBody = perform.andReturn()
         .getResponse()
@@ -74,7 +74,7 @@ public abstract class BaseControllerTest {
         .getTokenInfo().getAccessToken();
   }
 
-  protected SignUpDTO getUserByRole(Role role) {
+  protected SignUpRequest getUserByRole(Role role) {
     if (role == Role.USER) {
       return normalUser;
     } else if (role == Role.ADMIN) {
