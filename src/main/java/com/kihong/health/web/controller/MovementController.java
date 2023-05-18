@@ -2,6 +2,7 @@ package com.kihong.health.web.controller;
 
 import com.kihong.health.persistence.model.Movement;
 import com.kihong.health.persistence.repository.MovementRepository;
+import com.kihong.health.web.resource.MovementResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +21,10 @@ public class MovementController {
 
   @GetMapping
   public ResponseEntity listMovement(
-      Pageable pageable, PagedResourcesAssembler assembler) {
+      Pageable pageable, PagedResourcesAssembler<Movement> assembler) {
     Page<Movement> movementPage = movementRepository.findAll(pageable);
 
-    return ResponseEntity.ok(movementPage);
+    return ResponseEntity.ok(MovementResource.toPageResources(assembler, movementPage));
+//    return ResponseEntity.ok(movementPage);
   }
 }

@@ -13,6 +13,7 @@ public enum ErrorCode {
   WOD_NOT_FOUND(HttpStatus.NOT_FOUND, "WOD_404", "찾는 wod가 존재하지 않습니다."),
   USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "USER_401", "로그인을 해주시기 바랍니다."),
   USER_FORBIDDEN(HttpStatus.FORBIDDEN, "USER_403", "권한이 없습니다."),
+  CONFLICT(HttpStatus.CONFLICT, "CONFLICT", "이미 존재합니다."),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_404", "찾는 user가 존재하지 않습니다.");
   private final HttpStatus httpStatus;
   private final String errorCode;

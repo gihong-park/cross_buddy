@@ -21,7 +21,6 @@ public class SignUpRequest {
   private String email;
   @NotEmpty
   private String password;
-  @NotEmpty
   private Role role;
 
 }

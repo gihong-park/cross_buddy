@@ -3,8 +3,6 @@ package com.kihong.health.web.controller;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
-import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -40,6 +38,46 @@ class UserControllerTest extends BaseControllerTest {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Test
+  @DisplayName("SIGN UP USER TEST")
+  void signUp() throws Exception {
+    SignUpRequest signUpRequest = SignUpRequest.builder().username("test user")
+        .email("test@example.com").password("password").build();
+
+    ResultActions perform = this.mockMvc.perform(post("/api/v1/user/signup")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaTypes.HAL_JSON)
+        .content(objectMapper.writeValueAsString(signUpRequest))
+    );
+
+    ResultActions expect = perform.andDo(print())
+        .andExpect(status().isCreated());
+
+    expect.andDo(document("user-signup",
+        requestHeaders(
+            headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+            headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+        ),
+        requestFields(
+            fieldWithPath("username").description("유저의 이름"),
+            fieldWithPath("email").description("이메일"),
+            fieldWithPath("password").description("비밀번호"),
+            fieldWithPath("role").description("유저 역할")
+        ),
+        responseHeaders(
+            headerWithName(HttpHeaders.CONTENT_TYPE).description("JSON + HAL")
+        ),
+        responseFields(
+            fieldWithPath("id").description("유저 ID"),
+            fieldWithPath("username").description("유저의 이름"),
+            fieldWithPath("email").description("이메일"),
+            fieldWithPath("gender").description("성별"),
+            fieldWithPath("birthDay").description("생년월일")
+        )
+    ))
+    ;
+  }
 
   @Test
   @DisplayName("SIGN IN USER TEST")

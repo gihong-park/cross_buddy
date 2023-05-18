@@ -1,19 +1,25 @@
 package com.kihong.health.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kihong.health.persistence.dto.user.RefreshRequest;
 import com.kihong.health.persistence.dto.user.SignInRequest;
 import com.kihong.health.persistence.dto.user.SignInResponse;
+import com.kihong.health.persistence.dto.user.SignUpRequest;
 import com.kihong.health.persistence.dto.user.TokenInfo;
+import com.kihong.health.persistence.dto.user.UserResponse;
 import com.kihong.health.persistence.model.User;
 import com.kihong.health.persistence.repository.UserRepository;
+import com.kihong.health.persistence.service.user.UserService;
 import com.kihong.health.web.exception.ErrorCode;
 import com.kihong.health.web.exception.HttpException;
 import com.kihong.health.web.secure.JwtTokenProvider;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
@@ -30,9 +36,29 @@ public class UserController {
 
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
+
+  private final UserService userService;
   private final JwtTokenProvider jwtTokenProvider;
   private final long expired = 86400000;
 
+
+  @PostMapping("/signup")
+  public ResponseEntity
+  create(@RequestBody @Valid SignUpRequest signUpRequest, Errors errors) throws JsonProcessingException {
+    if (errors.hasErrors()) {
+      throw new HttpException(ErrorCode.BAD_REQUEST,
+          errors.toString());
+    }
+    if (userRepository.findByEmail(signUpRequest.getEmail())
+        .isPresent()) {
+      throw new HttpException(ErrorCode.CONFLICT , null);
+    }
+    User user = userService.createUser(signUpRequest);
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .location(URI.create("/api/v1/user/" + user.getId()))
+        .body(EntityModel.of(UserResponse.getValueFrom(user)));
+  }
 
   @PostMapping("/signin")
   public ResponseEntity SignIn(@RequestBody @Valid SignInRequest signIn, Errors errors) {

@@ -167,8 +167,8 @@ operation::resources-image-create[snippets='http-request,curl-request,request-pa
 
 operation::resources-image-get[snippets='http-request,curl-request,http-response,response-fields,links']
 
-[[resources-contents]]
-== 컨텐츠
+[[resources-movement]]
+== 동작
 
 
 [[resources-admin-contents-create]]
@@ -194,11 +194,11 @@ operation::resources-admin-contents-put[snippets='http-request,curl-request,requ
 
 operation::resources-admin-contents-delete[snippets='http-request,curl-request,request-headers,path-parameters,http-response,response-fields,links']
 
-[[resources-admin-contents-list]]
-=== 컨텐츠 리스트
+[[resources-movement-list]]
+=== 동작 리스트
 `GET` 방식으로 컨텐츠 리스트 불러오기
 
-operation::resources-admin-contents-list[snippets='http-request,curl-request,request-headers,http-response,response-fields,links']
+operation::resources-movement-list[snippets='http-request,curl-request,http-response,response-fields,links']
 
 [[resources-admin-contents-get]]
 === 컨텐츠 단 건
