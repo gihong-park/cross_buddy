@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kihong.health.persistence.dto.user.SignInRequest;
 import com.kihong.health.persistence.dto.user.SignInResponse;
 import com.kihong.health.persistence.dto.user.SignUpRequest;
+import com.kihong.health.persistence.dto.user.TokenInfo;
 import com.kihong.health.persistence.model.User.Role;
 import com.kihong.health.persistence.service.user.UserService;
 import java.io.File;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -28,6 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs
 @Sql({"/testdata/schema.sql", "/testdata/insertWOD.sql", "/testdata/insertUser.sql",
     "/testdata/insertRecord.sql", "/testdata/insertMovementRecord.sql",
     "/testdata/insertMovement.sql"})
@@ -70,8 +74,9 @@ public abstract class BaseControllerTest {
         .getResponse()
         .getContentAsString();
 
-    return "Bearer " + objectMapper.readValue(responseBody, SignInResponse.class)
-        .getTokenInfo().getAccessToken();
+    TokenInfo tokenInfo = objectMapper.convertValue(objectMapper.readValue(responseBody, Map.class).get("tokenInfo"), TokenInfo.class);
+
+    return "Bearer " + tokenInfo.getAccessToken();
   }
 
   protected SignUpRequest getUserByRole(Role role) {

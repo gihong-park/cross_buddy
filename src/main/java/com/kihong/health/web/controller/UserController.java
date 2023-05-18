@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
@@ -52,7 +53,7 @@ public class UserController {
 
     TokenInfo tokenInfo = jwtTokenProvider.createToken(getUser.get().getEmail(),
         getUser.get().getAuthorities(), this.expired);
-    return ResponseEntity.ok(SignInResponse.getValueFrom(getUser.get(), tokenInfo));
+    return ResponseEntity.ok(EntityModel.of(SignInResponse.getValueFrom(getUser.get(), tokenInfo)));
 
   }
 

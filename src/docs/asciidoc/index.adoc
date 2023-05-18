@@ -129,7 +129,7 @@ operation::user-signup[snippets='http-request,request-fields,http-response,respo
 
 `POST` 요청을 사용해서 일반 유저를 로그인 시킬 수 있다.
 
-operation::user-login[snippets='http-request,curl-request,request-fields,http-response,response-fields,links']
+operation::user-signin[snippets='http-request,curl-request,request-fields,http-response,response-fields,links']
 
 [[user-self-info]]
 === 로그인 유저 정보

@@ -1,6 +1,15 @@
 package com.kihong.health.web.controller;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.linkWithRel;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +28,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -41,15 +52,42 @@ class UserControllerTest extends BaseControllerTest {
         .build();
     ResultActions perform = this.mockMvc.perform(post("/api/v1/user/signin")
         .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaTypes.HAL_JSON)
         .content(objectMapper.writeValueAsString(signInRequest)));
 
-    perform.andDo(print())
+    ResultActions expect = perform.andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("id").exists())
         .andExpect(jsonPath("email").exists())
         .andExpect(jsonPath("username").exists())
-        .andExpect(jsonPath("tokenInfo").exists())
-    ;
+        .andExpect(jsonPath("tokenInfo").exists());
+
+    expect.andDo(document("user-signin",
+//        links(linkWithRel("profile").description("로그인 다큐먼트 링크")),
+        requestHeaders(
+            headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+            headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+        ),
+        requestFields(
+            fieldWithPath("usernameOremail").description("유저이름 혹은 이메일을 통한 로그인"),
+            fieldWithPath("password").description("비밀번호")
+        ),
+        responseHeaders(
+            headerWithName(HttpHeaders.CONTENT_TYPE).description("JSON + HAL")
+        ),
+        responseFields(
+            fieldWithPath("id").description("유저를 구분 짓는 unique ID"),
+            fieldWithPath("email").description("이메일"),
+            fieldWithPath("username").description("이름"),
+            fieldWithPath("gender").description("성별"),
+            fieldWithPath("birthDay").description("생년월일"),
+            fieldWithPath("tokenInfo.grantType").description("허가 타입"),
+            fieldWithPath("tokenInfo.accessToken").description("로그인에 필요한 토큰"),
+            fieldWithPath("tokenInfo.refreshToken").description("access token을 연장할 수 있는 토큰")
+//            fieldWithPath("_links.profile.href").description("다큐먼트 링크")
+        )
+
+    ));
   }
 
   @Test
