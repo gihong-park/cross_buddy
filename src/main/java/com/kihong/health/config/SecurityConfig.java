@@ -54,7 +54,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.POST, "/api/v1/user/signin", "/api/v1/user/signup",
             "/api/v1/user/refresh")
         .permitAll()
-        .requestMatchers(HttpMethod.GET, "/api/v1/record")
+        .requestMatchers(HttpMethod.GET, "/api/v1/record/**")
         .hasRole("USER")
         .requestMatchers(HttpMethod.POST, "/api/v1/record")
         .hasRole("USER")

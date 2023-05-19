@@ -127,6 +127,15 @@ public class RecordServiceImpl implements RecordService {
 
   @Override
   public Record getRecord(Long id) {
+    Optional<User> user = getUserContext();
+    var record = recordRepository.findById(id);
+    if(record.isEmpty()) {
+      throw new HttpException(ErrorCode.RECORD_NOT_FOUND, "");
+    }
+    if(!user.isEmpty() && user.get().getRole() == Role.USER && user.get().getId() != record.get().getUser().getId() ) {
+      throw new HttpException(ErrorCode.USER_UNAUTHORIZED, "");
+    }
+
     return recordRepository.findById(id).get();
   }
 

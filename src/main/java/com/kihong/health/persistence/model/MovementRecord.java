@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.hateoas.server.core.Relation;
 
 @Entity
 @Table(name = "movement_record")
@@ -24,6 +25,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @SuperBuilder
+@Relation(collectionRelation = "movement_records", itemRelation = "movement_record")
 public class MovementRecord extends BaseEntity {
 
   @Id

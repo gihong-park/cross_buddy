@@ -1,5 +1,6 @@
 package com.kihong.health.persistence.model.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -26,9 +27,11 @@ public class BaseEntity {
 
   @CreationTimestamp
   @CreatedDate
+  @JsonProperty("created_at")
   private LocalDateTime createdAt;
   @UpdateTimestamp
   @LastModifiedDate
+  @JsonProperty("updated_at")
   private LocalDateTime updatedAt;
 
   @Column(name = "is_deleted", nullable = false, columnDefinition = "BIT(1) DEFAULT b'0'")

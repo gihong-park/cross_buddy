@@ -51,6 +51,7 @@ public class UserController {
     }
     if (userRepository.findByEmail(signUpRequest.getEmail())
         .isPresent()) {
+      log.error("이미 존재하는 이메일입니다.");
       throw new HttpException(ErrorCode.CONFLICT , null);
     }
     User user = userService.createUser(signUpRequest);
@@ -63,6 +64,7 @@ public class UserController {
   @PostMapping("/signin")
   public ResponseEntity SignIn(@RequestBody @Valid SignInRequest signIn, Errors errors) {
     if (errors.hasErrors()) {
+      log.error(String.format("잘못된 요청: %s", errors));
       throw new HttpException(ErrorCode.BAD_REQUEST, errors.toString());
     }
 
@@ -71,10 +73,12 @@ public class UserController {
       getUser = userRepository.findByUsername(signIn.getUsernameOremail());
     }
     if (getUser.isEmpty()) {
-      throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
+      log.error("존재하지않은 유저입니다.");
+      throw new HttpException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 유저입니다.");
     }
     if (!passwordEncoder.matches(signIn.getPassword(), getUser.get().getPassword())) {
-      throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
+      log.error("비밀번호가 틀렸습니다.");
+      throw new HttpException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 유저입니다.");
     }
 
     TokenInfo tokenInfo = jwtTokenProvider.createToken(getUser.get().getEmail(),
@@ -87,20 +91,23 @@ public class UserController {
   public ResponseEntity RefreshToken(@RequestBody @Valid RefreshRequest refreshRequest,
       Errors errors) {
     if (errors.hasErrors()) {
+      log.error(String.format("잘못된 요청: %s", errors));
       throw new HttpException(ErrorCode.BAD_REQUEST, errors.toString());
     }
     if (!jwtTokenProvider.validateToken(refreshRequest.getRefreshToken())) {
+      log.error("잘못된 토큰입니다.");
       throw new HttpException(ErrorCode.BAD_REQUEST, "잘못된 토큰입니다.");
     }
     String email = jwtTokenProvider.getUserPk(refreshRequest.getRefreshToken());
     Optional<User> user = userRepository.findByEmail(email);
     if (user.isEmpty()) {
-      throw new HttpException(ErrorCode.USER_NOT_FOUND, "User doesn't exist");
+      log.error("유저가 존재하지 않습니다.");
+      throw new HttpException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 유저입니다.");
     }
 
     TokenInfo tokenInfo = jwtTokenProvider.createToken(user.get().getEmail(),
         user.get().getAuthorities(), this.expired);
 
-    return ResponseEntity.ok(tokenInfo);
+    return ResponseEntity.ok(EntityModel.of(tokenInfo));
   }
 }

@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.hateoas.server.core.Relation;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@Relation( itemRelation = "user")
 public class SignInResponse extends UserResponse {
 
   TokenInfo tokenInfo;

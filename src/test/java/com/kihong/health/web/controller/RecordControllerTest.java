@@ -1,14 +1,25 @@
 package com.kihong.health.web.controller;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedRequestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kihong.health.common.BaseControllerTest;
+import com.kihong.health.common.Documentation;
 import com.kihong.health.persistence.dto.movementRecord.CreateMovementRecord;
 import com.kihong.health.persistence.dto.record.CreateRecord;
 import com.kihong.health.persistence.dto.record.UpdateRecord;
@@ -25,8 +36,10 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.ResultActions;
 
 class RecordControllerTest extends BaseControllerTest {
@@ -37,17 +50,69 @@ class RecordControllerTest extends BaseControllerTest {
   @Autowired
   RecordService recordService;
 
+  private FieldDescriptor[] recordFields(FieldDescriptor... fieldDescriptors) {
+    var recordFields = new FieldDescriptor[]{
+        fieldWithPath("date").description("시행 날짜"),
+        fieldWithPath("description").description("상세 기록"),
+        fieldWithPath("note").description("노트"),
+        fieldWithPath("movement_records[]").description("동작별 기록"),
+        fieldWithPath("result").description("결과")
+    };
+    return Documentation.concatWithStream(recordFields, fieldDescriptors);
+  }
+
+  private FieldDescriptor[] recordResponseFields(FieldDescriptor... fieldDescriptors) {
+    return Documentation.concatWithStream(recordFields(
+        fieldWithPath("id").description("id"),
+        fieldWithPath("user").description("기록한 유저"),
+        fieldWithPath("wod").description("와드 내용"),
+        fieldWithPath("_links.self.href").description("셀프 링크"),
+        fieldWithPath("_links.profile.href").description("다큐먼트 링크")
+    ), fieldDescriptors);
+  }
+
   @Test
   @DisplayName("LIST RECORD TEST")
   void listRecord() throws Exception {
     ResultActions result = this.mockMvc.perform(
-        get("/api/v1/record").header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.ADMIN)));
+        get("/api/v1/record").header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.ADMIN))
+            .param("size", "1")
+            .param("page", "0")
+            .param("sort", "id," +
+                "asc")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaTypes.HAL_JSON));
 
     ResultActions expect = result.andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$._embedded.recordResponses[0].id").value(1))
-        .andExpect(jsonPath("$._embedded.recordResponses[0].wod.name").value("WOD 1"))
-        .andExpect(jsonPath("$._embedded.recordResponses[0].result").exists())
-        .andExpect(jsonPath("$._embedded.recordResponses[0].movementRecords[?(@.name == 'Row')]").exists());
+        .andExpect(jsonPath("$._embedded.records[0].id").value(1))
+        .andExpect(jsonPath("$._embedded.records[0].wod.name").value("WOD 1"))
+        .andExpect(jsonPath("$._embedded.records[0].result").exists())
+        .andExpect(jsonPath(
+            "$._embedded.records[0].movement_records[?(@.name == 'Row')]").exists());
+
+    expect.andDo(document("resources-record-list",
+        links(
+            Documentation.listLinks()
+        ),
+        requestHeaders(
+            Documentation.requestHeaderFields()
+        ),
+        queryParameters(
+            Documentation.pageParameter()
+        ),
+        responseHeaders(
+            Documentation.responseHeaderFields()
+        ),
+        relaxedResponseFields(
+            Documentation.pageLinkFields(
+                fieldWithPath("_embedded.records[]").description("기록 리스트")
+            )
+        )
+            .andWithPrefix(
+                "_embedded.records[].",
+                recordResponseFields()
+            )
+    ));
   }
 
   @Test
@@ -74,10 +139,11 @@ class RecordControllerTest extends BaseControllerTest {
             .param("search", "row"));
 
     ResultActions expect = result.andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$._embedded.recordResponses[0].id").value(1))
-        .andExpect(jsonPath("$._embedded.recordResponses[0].wod.name").value("WOD 1"))
-        .andExpect(jsonPath("$._embedded.recordResponses[0].result").exists())
-        .andExpect(jsonPath("$._embedded.recordResponses[0].movementRecords[?(@.name == 'Row')]").exists());
+        .andExpect(jsonPath("$._embedded.records[0].id").value(1))
+        .andExpect(jsonPath("$._embedded.records[0].wod.name").value("WOD 1"))
+        .andExpect(jsonPath("$._embedded.records[0].result").exists())
+        .andExpect(jsonPath(
+            "$._embedded.records[0].movement_records[?(@.name == 'Row')]").exists());
   }
 
   @Test
@@ -104,6 +170,7 @@ class RecordControllerTest extends BaseControllerTest {
 
     ResultActions result = this.mockMvc.perform(
         post("/api/v1/record").contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaTypes.HAL_JSON)
             .content(objectMapper.writeValueAsString(record))
             .header(HttpHeaders.AUTHORIZATION, getAccessToken(
                 Role.USER)));
@@ -116,6 +183,27 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("note").exists())
         .andExpect(jsonPath("date").exists())
         .andExpect(jsonPath("result").exists());
+
+    expect.andDo(document("resources-record-create",
+        links(
+            Documentation.defaultLinks()
+        ),
+        requestHeaders(
+            Documentation.requestHeaderFields(Documentation.authorizationHeaderField())
+        ),
+        relaxedRequestFields(
+            recordFields(
+                fieldWithPath("wod_id").description("와드 id")
+            )
+        ),
+        responseHeaders(
+            Documentation.responseHeaderFields()
+        ),
+        relaxedResponseFields(
+            recordResponseFields()
+        )
+
+    ));
   }
 
   @Test
@@ -142,7 +230,8 @@ class RecordControllerTest extends BaseControllerTest {
         .movementRecords(movementRecords).wodId(Long.valueOf(3)).build();
 
     ResultActions result = this.mockMvc.perform(
-        put("/api/v1/record/1").contentType(MediaType.APPLICATION_JSON)
+        put("/api/v1/record/{id}", updateRecord.getId()).contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaTypes.HAL_JSON)
             .content(objectMapper.writeValueAsString(updateRecord))
             .header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.ADMIN)));
 
@@ -150,6 +239,30 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("id").exists())
         .andExpect(jsonPath("note").value(changedNote));
+
+    expect.andDo(document("resources-record-put",
+        links(
+            Documentation.defaultLinks()
+        ),
+        pathParameters(
+            parameterWithName("id").description("기록 id")
+        ),
+        relaxedRequestFields(
+            recordFields(
+                fieldWithPath("id").description("id"),
+                fieldWithPath("wod_id").description("와드 id")
+            )
+        ),
+        requestHeaders(
+            Documentation.requestHeaderFields(Documentation.authorizationHeaderField())
+        ),
+        responseHeaders(
+            Documentation.responseHeaderFields()
+        ),
+        relaxedResponseFields(
+            recordResponseFields()
+        )
+    ));
   }
 
   @Test
@@ -189,5 +302,31 @@ class RecordControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("code").value(ErrorCode.RECORD_NOT_FOUND.getErrorCode()))
         .andExpect(jsonPath("message").value(""))
         .andExpect(jsonPath("details").value(ErrorCode.RECORD_NOT_FOUND.getDetail()));
+  }
+
+  @Test
+  @DisplayName("GET RECORD")
+  void getRecord() throws Exception {
+
+    ResultActions result = this.mockMvc.perform(
+        get("/api/v1/record/{id}", 1).header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.ADMIN)));
+
+    ResultActions expect = result.andDo(print()).andExpect(status().isOk());
+
+    expect.andDo(document("resources-record-get",
+        links(
+            Documentation.defaultLinks()
+        ),
+        requestHeaders(Documentation.authorizationHeaderField()),
+        pathParameters(
+            parameterWithName("id").description("record id")
+        ),
+        responseHeaders(
+            Documentation.responseHeaderFields()
+        ),
+        relaxedResponseFields(
+            recordResponseFields()
+        )
+    ));
   }
 }

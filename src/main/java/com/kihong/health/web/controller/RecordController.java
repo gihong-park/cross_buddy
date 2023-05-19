@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.endpoint.SecurityContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,12 @@ public class RecordController {
 
   final RecordRepository recordRepository;
   final RecordService recordService;
+
+  @GetMapping("/{id}")
+  public ResponseEntity getRecord(@PathVariable Long id) {
+    var record = recordService.getRecord(id);
+    return ResponseEntity.ok(RecordResource.of(RecordResponse.getValueFrom(record), RecordResource.getPrefix() + "record-get"));
+  }
 
   @GetMapping
   public ResponseEntity listRecord(
@@ -65,7 +72,7 @@ public class RecordController {
     Record updatedRecord = recordService.updateRecord(ur);
 
 
-    return ResponseEntity.ok(RecordResource.of(RecordResponse.getValueFrom(updatedRecord),RecordResource.getPrefix()+"record-update"));
+    return ResponseEntity.ok(RecordResource.of(RecordResponse.getValueFrom(updatedRecord),RecordResource.getPrefix()+"record-put"));
   }
 
   private Page<RecordResponse> toPageResponse(Page<Record> page,

@@ -3,6 +3,7 @@ package com.kihong.health.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kihong.health.persistence.dto.workoutOftheDay.CreateWorkoutOftheDay;
 import com.kihong.health.persistence.model.common.BaseEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -45,6 +46,7 @@ public class WorkoutOftheDay extends BaseEntity {
   @JsonManagedReference(value = "wod")
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "wod_id", insertable = false, updatable = false, nullable = true)
+  @JsonProperty("movement_records")
   private List<MovementRecord> movementRecords;
   @Type(JsonType.class)
   @Column(columnDefinition = "json")

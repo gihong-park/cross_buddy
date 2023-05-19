@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.kihong.health.common.BaseControllerTest;
+import com.kihong.health.common.Documentation;
 import com.kihong.health.persistence.dto.user.RefreshRequest;
 import com.kihong.health.persistence.dto.user.SignInRequest;
 import com.kihong.health.persistence.dto.user.SignUpRequest;
@@ -73,7 +74,7 @@ class UserControllerTest extends BaseControllerTest {
             fieldWithPath("username").description("유저의 이름"),
             fieldWithPath("email").description("이메일"),
             fieldWithPath("gender").description("성별"),
-            fieldWithPath("birthDay").description("생년월일")
+            fieldWithPath("birth_day").description("생년월일")
         )
     ))
     ;
@@ -101,30 +102,26 @@ class UserControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("tokenInfo").exists());
 
     expect.andDo(document("user-signin",
-//        links(linkWithRel("profile").description("로그인 다큐먼트 링크")),
         requestHeaders(
-            headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-            headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+            Documentation.requestHeaderFields()
         ),
         requestFields(
             fieldWithPath("usernameOremail").description("유저이름 혹은 이메일을 통한 로그인"),
             fieldWithPath("password").description("비밀번호")
         ),
         responseHeaders(
-            headerWithName(HttpHeaders.CONTENT_TYPE).description("JSON + HAL")
+          Documentation.responseHeaderFields()
         ),
         responseFields(
             fieldWithPath("id").description("유저를 구분 짓는 unique ID"),
             fieldWithPath("email").description("이메일"),
             fieldWithPath("username").description("이름"),
             fieldWithPath("gender").description("성별"),
-            fieldWithPath("birthDay").description("생년월일"),
-            fieldWithPath("tokenInfo.grantType").description("허가 타입"),
-            fieldWithPath("tokenInfo.accessToken").description("로그인에 필요한 토큰"),
-            fieldWithPath("tokenInfo.refreshToken").description("access token을 연장할 수 있는 토큰")
-//            fieldWithPath("_links.profile.href").description("다큐먼트 링크")
+            fieldWithPath("birth_day").description("생년월일"),
+            fieldWithPath("tokenInfo.grant_type").description("허가 타입"),
+            fieldWithPath("tokenInfo.access_token").description("로그인에 필요한 토큰"),
+            fieldWithPath("tokenInfo.refresh_token").description("access token을 연장할 수 있는 토큰")
         )
-
     ));
   }
 
@@ -135,11 +132,12 @@ class UserControllerTest extends BaseControllerTest {
 
     ResultActions perform = this.mockMvc.perform(post("/api/v1/user/refresh")
         .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaTypes.HAL_JSON)
         .content(objectMapper.writeValueAsString(getRefreshRequest(expired)))
     );
 
     ResultActions expect = perform.andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("refreshToken").exists()).andExpect(jsonPath("accessToken").exists());
+        .andExpect(jsonPath("refresh_token").exists()).andExpect(jsonPath("access_token").exists());
 
   }
 
