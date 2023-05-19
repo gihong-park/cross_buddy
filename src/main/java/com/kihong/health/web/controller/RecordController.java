@@ -3,9 +3,12 @@ package com.kihong.health.web.controller;
 import com.kihong.health.persistence.dto.record.CreateRecord;
 import com.kihong.health.persistence.dto.record.RecordResponse;
 import com.kihong.health.persistence.dto.record.UpdateRecord;
+import com.kihong.health.persistence.dto.workoutOftheDay.WorkoutOftheDayResponse;
 import com.kihong.health.persistence.model.Record;
+import com.kihong.health.persistence.model.WorkoutOftheDay;
 import com.kihong.health.persistence.repository.RecordRepository;
 import com.kihong.health.persistence.service.record.RecordService;
+import com.kihong.health.web.resource.RecordResource;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -40,10 +43,8 @@ public class RecordController {
   ) {
     Page<Record> recordPage = recordService.listRecord(search, userId, pageable);
 
-    List<RecordResponse> contents = recordPage.getContent().stream()
-        .map(record -> RecordResponse.getValueFrom(record)).toList();
-
-    return ResponseEntity.ok(new PageImpl(contents, pageable, recordPage.getTotalElements()));
+    Page<RecordResponse> recordResponsePage = toPageResponse(recordPage, pageable);
+    return ResponseEntity.ok(RecordResource.toPageResources(assembler, recordResponsePage));
   }
 
   @PostMapping
@@ -52,8 +53,8 @@ public class RecordController {
   ) {
     Record createdRecord = recordService.createRecord(cr);
 
-    return ResponseEntity.created(URI.create("/api/v1/record" + createdRecord.getId()))
-        .body(RecordResponse.getValueFrom(createdRecord));
+    return ResponseEntity.created(RecordResource.selfLinkBuilder.slash(createdRecord.getId()).toUri())
+        .body(RecordResource.of(RecordResponse.getValueFrom(createdRecord), RecordResource.getPrefix()+"record-create"));
   }
 
   @PutMapping("/{id}")
@@ -63,6 +64,18 @@ public class RecordController {
   ) {
     Record updatedRecord = recordService.updateRecord(ur);
 
-    return ResponseEntity.ok(RecordResponse.getValueFrom(updatedRecord));
+
+    return ResponseEntity.ok(RecordResource.of(RecordResponse.getValueFrom(updatedRecord),RecordResource.getPrefix()+"record-update"));
+  }
+
+  private Page<RecordResponse> toPageResponse(Page<Record> page,
+      Pageable pageable) {
+    List<RecordResponse> contents = page.getContent().stream()
+        .map(v -> RecordResponse.getValueFrom(v)).toList();
+
+    Page<RecordResponse> pageResponse = new PageImpl(contents, pageable,
+        page.getTotalElements());
+
+    return pageResponse;
   }
 }

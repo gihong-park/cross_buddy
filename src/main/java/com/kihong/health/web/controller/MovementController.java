@@ -25,6 +25,5 @@ public class MovementController {
     Page<Movement> movementPage = movementRepository.findAll(pageable);
 
     return ResponseEntity.ok(MovementResource.toPageResources(assembler, movementPage));
-//    return ResponseEntity.ok(movementPage);
   }
 }

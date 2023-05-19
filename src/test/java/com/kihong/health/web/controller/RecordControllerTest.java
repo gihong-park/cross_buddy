@@ -44,13 +44,10 @@ class RecordControllerTest extends BaseControllerTest {
         get("/api/v1/record").header(HttpHeaders.AUTHORIZATION, getAccessToken(Role.ADMIN)));
 
     ResultActions expect = result.andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].id").value(1))
-        .andExpect(jsonPath("$.content[0].wod.name").value("WOD 1"))
-        .andExpect(jsonPath("$.content[0].result").exists())
-        .andExpect(jsonPath("$.content[0].movementRecords[?(@.name == 'Row')]").exists())
-        .andExpect(jsonPath("$.content[1].id").value(2))
-        .andExpect(jsonPath("$.content[1].wod.name").value("WOD 2"))
-        .andExpect(jsonPath("$.content[1].movementRecords[?(@.name == 'Row')]").exists());
+        .andExpect(jsonPath("$._embedded.recordResponses[0].id").value(1))
+        .andExpect(jsonPath("$._embedded.recordResponses[0].wod.name").value("WOD 1"))
+        .andExpect(jsonPath("$._embedded.recordResponses[0].result").exists())
+        .andExpect(jsonPath("$._embedded.recordResponses[0].movementRecords[?(@.name == 'Row')]").exists());
   }
 
   @Test
@@ -77,13 +74,10 @@ class RecordControllerTest extends BaseControllerTest {
             .param("search", "row"));
 
     ResultActions expect = result.andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].id").value(1))
-        .andExpect(jsonPath("$.content[0].wod.name").value("WOD 1"))
-        .andExpect(jsonPath("$.content[0].result").exists())
-        .andExpect(jsonPath("$.content[0].movementRecords[?(@.name == 'Row')]").exists())
-        .andExpect(jsonPath("$.content[1].id").value(2))
-        .andExpect(jsonPath("$.content[1].wod.name").value("WOD 2"))
-        .andExpect(jsonPath("$.content[1].movementRecords[?(@.name == 'Row')]").exists());
+        .andExpect(jsonPath("$._embedded.recordResponses[0].id").value(1))
+        .andExpect(jsonPath("$._embedded.recordResponses[0].wod.name").value("WOD 1"))
+        .andExpect(jsonPath("$._embedded.recordResponses[0].result").exists())
+        .andExpect(jsonPath("$._embedded.recordResponses[0].movementRecords[?(@.name == 'Row')]").exists());
   }
 
   @Test

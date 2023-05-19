@@ -6,14 +6,19 @@ import com.kihong.health.persistence.model.WorkoutOftheDay;
 import com.kihong.health.persistence.repository.WorkoutOftheDayRepository;
 import com.kihong.health.persistence.service.workoutOftheDay.WorkoutOftheDayService;
 import com.kihong.health.util.DateTemper;
+import com.kihong.health.web.resource.WorkoutOftheDayResource;
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,23 +34,43 @@ public class WorkoutOftheDayController {
 
   final WorkoutOftheDayRepository workoutOftheDayRepository;
   final WorkoutOftheDayService wodService;
+  final ModelMapper modelMapper;
 
   @GetMapping
   public ResponseEntity listWOD(Pageable pageable, PagedResourcesAssembler assembler,
-      @RequestParam(name = "date", required = false, defaultValue = "#{T(java.time.LocalDate).now()}") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+      @RequestParam(name = "date", required = false, defaultValue = "#{java.time.LocalDate.now()}") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
     LocalDate monday = DateTemper.getFirstDayOfWeek(date);
     LocalDate sunday = DateTemper.getLastDayOfWeek(date);
-    Page<WorkoutOftheDay> workoutOftheDayList = workoutOftheDayRepository.findByDateBetweenOrderByDate(
+    Page<WorkoutOftheDay> workoutOftheDayPage = workoutOftheDayRepository.findByDateBetweenOrderByDate(
         monday, sunday, pageable);
 
-    return ResponseEntity.ok(workoutOftheDayList);
+    Page<WorkoutOftheDayResponse> pageResponse = toPageResponse(workoutOftheDayPage, pageable);
+    PagedModel<WorkoutOftheDayResponse> body = WorkoutOftheDayResource.toPageResources(assembler,
+        pageResponse);
+
+    return ResponseEntity.ok(body);
   }
 
   @PostMapping
   public ResponseEntity createWOD(@RequestBody @Valid CreateWorkoutOftheDay createWOD) {
     WorkoutOftheDay wod = wodService.createWOD(createWOD);
 
-    return ResponseEntity.created(URI.create("/api/v1/wod" + wod.getId()))
-        .body(WorkoutOftheDayResponse.getValueFrom(wod));
+    EntityModel<WorkoutOftheDayResponse> body = WorkoutOftheDayResource.of(
+        WorkoutOftheDayResponse.getValueFrom(wod),
+        WorkoutOftheDayResource.getPrefix()+"workoutOftheDay-create");
+    return ResponseEntity.created(
+            WorkoutOftheDayResource.selfLinkBuilder.slash(wod.getId()).toUri())
+        .body(body);
+  }
+
+  private Page<WorkoutOftheDayResponse> toPageResponse(Page<WorkoutOftheDay> page,
+      Pageable pageable) {
+    List<WorkoutOftheDayResponse> contents = page.getContent().stream()
+        .map(v -> WorkoutOftheDayResponse.getValueFrom(v)).toList();
+
+    Page<WorkoutOftheDayResponse> pageResponse = new PageImpl(contents, pageable,
+        page.getTotalElements());
+
+    return pageResponse;
   }
 }
