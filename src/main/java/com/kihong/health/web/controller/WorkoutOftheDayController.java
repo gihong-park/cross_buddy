@@ -57,7 +57,7 @@ public class WorkoutOftheDayController {
 
     EntityModel<WorkoutOftheDayResponse> body = WorkoutOftheDayResource.of(
         WorkoutOftheDayResponse.getValueFrom(wod),
-        WorkoutOftheDayResource.getPrefix()+"workoutOftheDay-create");
+        WorkoutOftheDayResource.getPrefix()+"wod-create");
     return ResponseEntity.created(
             WorkoutOftheDayResource.selfLinkBuilder.slash(wod.getId()).toUri())
         .body(body);

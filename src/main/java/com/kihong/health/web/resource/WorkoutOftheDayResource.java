@@ -19,11 +19,11 @@ public class WorkoutOftheDayResource extends Resource<WorkoutOftheDayResponse> {
   public static WebMvcLinkBuilder selfLinkBuilder = linkTo(WorkoutOftheDayController.class);
 
   public static String getDocs() {
-    return getPrefix() + "workoutOftheDay-get";
+    return getPrefix() + "wod-get";
   }
 
   public static String getListDocs() {
-    return getPrefix() + "workoutOftheDay-list";
+    return getPrefix() + "wod-list";
   }
 
   public static EntityModel<WorkoutOftheDayResponse> of(WorkoutOftheDayResponse contents,
